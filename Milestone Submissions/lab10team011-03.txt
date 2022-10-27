@@ -1,0 +1,25 @@
+Team Number: 011-03
+Team Name: CKBA
+
+John Otterbein, github username JOHNOTTERBEIN
+Avery Mccauley, github username AVERYMCCAULEY
+Mallory Prescott, github username PVMALLARD
+Nathaniel Lee, github username leenate
+Lucca Quintela, github username BellaIsStinky
+Madison Crouch, github username MADISONCROU
+
+Application Name: Cool Kids Book Application
+
+Application Description: Our application will allow you to create a user that will
+keep track of all of your reading neads. You will be able to make a profile that will keep track of previous books read
+and the user's favorite genre. You then will be able to find different people/matches who have simlar likes and add 
+them to your friend list. Another part of the application is the recommendation tab that will give you new books
+to read based off your profile and matches.
+
+Another functionality of our application is showing reviews and being able to make your own review on 
+the books in the api. You will also be able to make a wishlist where you put different books that you 
+would like to read in the future. 
+
+
+Vision Statement: To introduce people to new books and friends who have similar interests.
+
