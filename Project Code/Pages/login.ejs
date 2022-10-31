@@ -1,0 +1,23 @@
+<%- include ('../partials/header') %> <%- include ('../partials/menu') %>
+
+<main>
+  <div class="container">
+    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+    <form action="/login" method="POST">
+        <div class="col-auto" >
+          <label for="email" >Email address</label>
+          <input type="email" name="email" id="email" class="form-control" required>
+          <!-- <div id="urlsubtxt" class="form-text">We'll never share your email with anyone else.</div> -->
+        </div>
+
+        <div class="col-auto" >
+            <label for="username" >User name</label>
+            <input type="text" name="username" id="username" class="form-control" required>
+          </div>
+
+        <button id="submit_button" class="btn btn-primary" type="submit">Submit</button>
+        </form>
+  </div>
+</main>
+
+<%- include ('../partials/footer') %>
