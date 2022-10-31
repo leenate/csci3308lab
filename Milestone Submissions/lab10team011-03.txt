@@ -21,7 +21,8 @@ the books in the api. You will also be able to make a wishlist where you put dif
 would like to read in the future. 
 
 
-Vision Statement: To introduce people to new books and friends who have similar interests.
+Vision Statement: To introduce people to new books and friends who have similar interests. 
+The target audience that will benefit is people who enjoy reading and who want to connect with other readers.
 
 We will communticate with a phone groupchat.
 
