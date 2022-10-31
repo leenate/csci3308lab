@@ -1,0 +1,17 @@
+<%- include ('../partials/header') %> <%- include ('../partials/menu') %>
+
+<main>
+  <div class="container">
+    <form style="text-align:center;" method="post" action="/submit_books">
+
+      <h4 style="padding-top:10%">Enter a csv list of your favorite books</h4>
+      <input type="text" name="username" id="form2Example1" class="form-control" style="padding-top:5%">
+      <br>
+      <button class="btn btn-primary btn-block mb-4 ">
+        submit 
+      </button>
+    </form>
+  </div>
+</main>
+
+<%- include ('../partials/footer') %>
