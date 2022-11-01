@@ -26,7 +26,6 @@ The target audience that will benefit is people who enjoy reading and who want t
 
 We will communticate with a phone groupchat.
 
-Team Meeting: Tuesdays at 4
-Identify the day(s) and time(s), mode, and location your team has agreed upon for regular meetings. “Modality” refers to how you are meeting (face-to-face), group video chat (like Zoom, Google Meet), etc.
-Weekly meeting with TA: Tuesdays at 5
-You will also mention the meeting day, time and location (physical or online) for the weekly meeting with your TA here.
+Team Meeting: Tuesdays at 4 online via Zoom
+
+Weekly meeting with TA: Tuesdays at 5 online via Google Meets
