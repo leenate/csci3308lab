@@ -1,0 +1,37 @@
+<%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
+
+<main>
+  <div class="container">
+    <h2 class="title">Search Books</h2>
+    <!-- THE SEARCH FUNCTION -->
+    <div class="input-group">
+        <div class="form-outline">
+          <input type="search" id="form1" class="form-control" />
+          <label class="form-label" for="form1">Search</label>
+        </div>
+        <button type="button" class="btn btn-primary">
+          <i class="fas fa-search"></i>
+        </button>
+    </div>
+    <!-- display books (will display a portion of the database pre and post search) -->
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><!--book image--></th>
+                    <th>Book Title</th>
+                    <th>Book Description</th>
+                    <th>Book Price/Availability</th>
+                    <th><!--button to purchase/rent/download book--></th>
+                    <th><!--button to add book to wishlist--></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--iteratively display books in users wishlist based on their info in db and/or info from api call-->
+            </tbody>
+        </table>
+    </div>
+  </div>
+</main>
+
+<%- include ('../Partials/footer') %>
