@@ -2,7 +2,7 @@ Team Number: 011-03
 Team Name: CKBA
 
 John Otterbein, github username JOHNOTTERBEIN
-Avery Mccauley, github username AVERYMCCAULEY
+Avery Mccauley, github username AveryMcCauley
 Mallory Prescott, github username PVMALLARD
 Nathaniel Lee, github username leenate
 Lucca Quintela, github username BellaIsStinky
@@ -24,8 +24,10 @@ would like to read in the future.
 Vision Statement: To introduce people to new books and friends who have similar interests. 
 The target audience that will benefit is people who enjoy reading and who want to connect with other readers.
 
+Development Methodology: Agile. Weekly meetings with TA will discuss progress made during the previous week, plans for the next week, and any notable blockers or dependencies.
+
 We will communticate with a phone groupchat.
 
-Team Meeting: Tuesdays at 4 online via Zoom
+Team Meeting: Tuesdays at 4 online via Zoom.
 
-Weekly meeting with TA: Tuesdays at 5 online via Google Meets
+Weekly meeting with TA: Tuesdays at 5 online via Google Meets.
