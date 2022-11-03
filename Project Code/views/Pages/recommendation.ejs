@@ -1,0 +1,36 @@
+<%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
+
+<main>
+    <!--title of the recommendatiosn page will be <username>'s recommendations-->
+    <h2 class="title">Recommendations</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><!--book image--></th>
+                <th>Book Title</th>
+                <th>Book Description</th>
+                <th>Book Price/Availability</th>
+                <th><!--button to go to book on goodreads--></th>
+                <th><!--button to add book from wishlist--></th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--iteratively display books in users recommendation list based on their info in db/info from api call-->
+            <tr>
+                <td><!--image--></td>
+                <td>example book title</td>
+                <td>example book description</td>
+                <td>example book price</td>
+                <td>
+                    <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='something'">Select Book</button>
+                </td>
+                <td>
+                    <button type="submit" name="add_book" class="btn btn-success" onclick=" ">Add Book</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
+</main>
+
+<%- include ('../Partials/footer') %>
