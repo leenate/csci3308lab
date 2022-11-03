@@ -1,0 +1,30 @@
+11-1-22 Meeting Minutes:
+
+1st team meeting with TA.
+
+Discussed how the meetings will proceed. Each week we will cover:
+  1. Progress made since the last week, including which members did what tasks.
+  2. Plans for the next week.
+  3. Any potential blockers or dependencies preventing us from making progress.
+ 
+ The team showed our project board, and discussed our project idea. 
+ We also walked through adding a user story to the project board.
+ 
+ The team indicated that we would have our user stories and epics on the project board completed by the end of this week.
+ Next week, we will move on to getting started on coding our assigned to-dos (visible on the project board).
+
+1. Decisions made:
+  The team decided to have our user stories and epics on the project board completed by the end of this week.
+  The team has also made decisions regarding the wireframe and UI interface over the week (see wireframe image for details).
+  
+2. Alternative actions/options discussed:
+  The team has discussed which API to use, and is deciding between Goodreads and Google Books APIs.
+  
+3. Follow-up items, including agreed-on roles and responsibilities:
+  Each team member was assigned an issue one the project board:
+    Madison - wishlist
+    Mallory - search books
+    Avery - login/Logout/Register pages + processes
+    Nate - submit book references
+    John - final recommended books
+    Lucca - TBD

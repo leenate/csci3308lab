@@ -1,7 +1,7 @@
-<!--import navbar, footer, etc.-->
+<%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
 
 <main>
-    <!--title of the wishlist page will be <username>'s wishlist'-->
+    <!--title of the wishlist page will be <username>'s wishlist-->
     <h2 class="title">Wishlist</h2>
     <table class="table">
         <thead>
@@ -10,12 +10,27 @@
                 <th>Book Title</th>
                 <th>Book Description</th>
                 <th>Book Price/Availability</th>
-                <th><!--button to purchase/rent/download book--></th>
+                <th><!--button to go to book on goodreads--></th>
                 <th><!--button to remove book from wishlist--></th>
             </tr>
         </thead>
         <tbody>
-            <!--iteratively display books in users wishlist based on their info in db and/or info from api call-->
+            <!--iteratively display books in users wishlist based on their info in db/info from api call-->
+            <tr>
+                <td><!--image--></td>
+                <td>example book title</td>
+                <td>example book description</td>
+                <td>example book price</td>
+                <td>
+                    <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='something'">Select Book</button>
+                </td>
+                <td>
+                    <button type="submit" name="remove_book" class="btn btn-danger" onclick=" ">Remove Book</button>
+                </td>
+            </tr>
         </tbody>
     </table>
+    <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
 </main>
+
+<%- include ('../Partials/footer') %>
