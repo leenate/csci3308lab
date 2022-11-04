@@ -1,0 +1,19 @@
+Week 1:
+
+Date: 11/4/22
+The below list states updates made since the previous meeting.
+As this is the beginning of the project, the team has been focused largely on the planning stage. 
+
+New features:
+Features have been discussed and planned. Please see the wireframe diagram for more detail.
+
+Bug Fixes:
+N/A
+
+Contributors:
+  Avery: Created meeting notes/release notes, login/logout ejs files, use case diagram, and Epic field to project board.
+  Mallory: Created detailed wireframe diagram, created project board, researched API.
+  Madison: Added user stories to project board, assigned team members to user stories, and added relevant ejs files.
+  John: Created Github repository file structure, added the final testing document to Github.
+  Nate: Added .env file, created views and partials structure
+  All: Created feature branches, created Test Cases (Lab 11)
