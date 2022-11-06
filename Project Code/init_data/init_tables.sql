@@ -29,7 +29,13 @@ CREATE TABLE IF NOT EXISTS reviews (
 CREATE TABLE IF NOT EXISTS user_to_user (
   user_one INT NOT NULL,
   user_two INT NOT NULL,
-  PRIMARY KEY(user_one,user_two)
+  PRIMARY KEY(user_one,user_two),
+  CONSTRAINT fk_userone
+    FOREIGN KEY(user_one)
+      REFERENCES users(user_id),
+  CONSTRAINT fk_usertwo
+    FOREIGN KEY(user_two)
+      REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS books (
