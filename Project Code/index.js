@@ -68,6 +68,32 @@ app.post('/submit_books', (req, res) => {
     //ACTUALLY SUBMIT BOOKS HERE
     res.render('Pages/login');
 });
+app.get('/searchBooks', (req, res) => {
+    axios({
+        url: `https://www.goodreads.com/search.xml?key=OAuth&q=Ender%27s+Game`,
+        method: 'GET',
+        dataType:'json',
+        params: {
+            "apikey": req.session.user.api_key,
+            "keyword": "Ender", //input, //you can choose any artist/event here
+            "size": 10,
+        }
+    })
+    .then(results => {
+        console.log(results.data); // the results will be displayed on the terminal if the docker containers are running
+        res.render('Pages/searchBooks',{
+            results: results.data._embedded.events
+        }) 
+    })
+    .catch(err => {
+        res.render('Pages/searchBooks',{
+          results: [],
+          error: true,
+          message: err.message,
+        })
+    })
+
+});
 // Authentication Middleware.
 const auth = (req, res, next) => {
     if (!req.session.user) {

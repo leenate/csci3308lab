@@ -28,6 +28,35 @@
             </thead>
             <tbody>
                 <!-- displays a portion of the database pre and post search -->
+                <% book.forEach(function(book) { %>
+                  <tr>
+                    <td><%= book.img %></td>
+                    <td><%= book.title %></td>
+                    <td><%= book.author %></td>
+                    <td><%= book.description %></td>
+                    <td><%= book.link %></td>
+                    <td>
+                      <% if(locals.action === 'delete'){ %>
+                        <form action="/courses/delete" method="POST">
+                          <input name="course_id" value="<%= course.course_id %>" type="hidden">
+                          <button type="submit" class="btn btn-primary">Delete</button>
+                        </form>
+                      <% } else { %>
+                        <% if(book.addedtolist) { %>
+                          <form action="/courses/add" method="POST">
+                            <input name="course_id" value="<%= course.course_id %>" type="hidden">
+                            <button type="submit" class="btn btn-primary" disabled>Add</button>
+                          </form>
+                        <% } else { %>
+                          <form action="/courses/add" method="POST">
+                            <input name="course_id" value="<%= course.course_id %>" type="hidden">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                          </form>
+                        <% } %>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
             </tbody>
         </table>
     </div>
