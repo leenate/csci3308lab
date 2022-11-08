@@ -64,6 +64,9 @@ app.get('/matches', (req, res) => {
 app.get('/wishlist', (req, res) => {
     res.render('Pages/wishlist');
 });
+app.get('/recommendation', (req, res) => {
+    res.render('Pages/recommendation');
+});
 app.post('/submit_books', (req, res) => {
     //ACTUALLY SUBMIT BOOKS HERE
     res.render('Pages/login');
