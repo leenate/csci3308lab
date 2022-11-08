@@ -1,20 +1,35 @@
+<style>
+.center {
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+  </style>
+
 <body>
+<%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
+
 <main>
-    <button type="button">Find Matches</button>
-    <table>
+    <div class="center" style="padding-top:1%">
+        <button type="submit" name="find_matches" class="btn btn-success" onclick="window.location.href='later'">Find Matches</button>
+    </div>
+    <div class="center" style="padding-top:5%">
+    <table style="width:100%">
         <tr>
             <th>Matches</th>
         </tr>
         <tr>
             <td>Match #1 name</td>
-            <td><button type="button">Add Friend</button></td>
+            <td><button type="submit" name="add_friend" class="btn btn-success" onclick="window.location.href='later'">Add Friend</button></td>
         </tr>
         <tr>
             <td>Match #2 name</td>
-            <td><button type="button">Add Friend</button></td>
+            <td><button type="submit" name="add_friend" class="btn btn-success" onclick="window.location.href='later'">Add Friend</button></td>
         </tr>
     </table>
-    <table>
+    <table style="width:100%">
         <tr>
             <th>Friends</th>
         </tr>
@@ -29,5 +44,7 @@
             <img alt="Icon" style="height:25px" src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" >
         </tr>
     </table>
+    </div>
 </main>
+<%- include ('../Partials/footer') %>
 </body>
