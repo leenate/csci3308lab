@@ -2,7 +2,6 @@
 
 2nd team meeting with TA.
 
-Discussed how the meetings will proceed. Each week we will cover:
   1. Progress made since the last week, including which members did what tasks:
       Avery - added confirm password logic to Register page. 
             - Created meeting notes/release notes, login/logout ejs files, use case diagram, and Epic field to project board.
@@ -10,6 +9,7 @@ Discussed how the meetings will proceed. Each week we will cover:
       Mallory - Created detailed wireframe diagram, created project board, researched APIs.
       Nate - Added .env file, created views and partials structure. Also added docker-compose.yaml, index.js, and init_table.sql.
       John - Created Github repository file structure, added the final testing document to Github.
+      Lucca - Worked on UI for user matches.
       All: Created feature branches, created Test Cases (Lab 11)
   
   2. Plans for the next week:
@@ -45,7 +45,7 @@ Discussed how the meetings will proceed. Each week we will cover:
     
     Madison - work on wishlist pages.
     Mallory - work on search books pages.
-    Avery - work on submit/read reviews page, finalize pushing login/logout/register to main. Continue to update meeting and release notes.
+    Avery - work on submit/read reviews page, and login/logout/register. Continue to update meeting and release notes.
     Nate - work on submit book preferences pages.
     John - work on find recommended users page.
     Lucca - work on find user matches page.
