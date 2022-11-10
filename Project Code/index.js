@@ -58,8 +58,17 @@ app.get('/bookPreferences', (req, res) => {
 app.get('/logout', (req, res) => {
     res.render('Pages/logout');
 });
+// app.get('/matches', (req, res) => {
+//     const query = 'SELECT * FROM users LIMIT 10;';
+//     db.one(query)
+//     .then(data =>{
+//         res.render('Pages/matches',{
+//             "data": data
+//         })
+//     })
+// });
 app.get('/matches', (req, res) => {
-    res.render('Pages/matches');
+    res.render('Pages/matches')
 });
 app.get('/wishlist', (req, res) => {
     res.render('Pages/wishlist');
