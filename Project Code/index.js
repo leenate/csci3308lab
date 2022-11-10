@@ -141,7 +141,6 @@ app.post('/submit_books', async (req, res) => {
             res.render('Pages/wishlist');
         });
 });
-
 // Authentication Middleware.
 const auth = (req, res, next) => {
     if (!req.session.user) {
