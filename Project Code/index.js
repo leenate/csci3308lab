@@ -62,8 +62,8 @@ app.get('/matches', (req, res) => {
     res.render('Pages/matches');
 });
 app.get('/wishlist', (req, res) => {
-    res.render('Pages/wishlist');
-});
+        res.render('pages/wishlist');
+    });
 app.post('/submit_books', (req, res) => {
     //ACTUALLY SUBMIT BOOKS HERE
     res.render('Pages/login');

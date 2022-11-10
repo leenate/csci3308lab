@@ -1,0 +1,63 @@
+﻿Lab 11 Testing
+CKBA  011-03
+
+
+Login
+1. User acceptance test cases
+   1. As a user, I should not be able to log in with a blank field. The data will consist of two fields: a blank username and/or a blank password. The user activity will include leaving either or both fields empty resulting in them being prompted to try again.
+   2. As a user, I should not be able to log in with an unregistered account. The data will consist of two fields: an invalid username and a password. The user activity will include trying to log in with an invalid username and/or password and them being prompted to try again or to register.
+   3. As a user, I should be able to log in with a registered account. The data will consist of two fields: a valid username and a valid password. The user activity will include trying to log in with a registered account and being redirected to their book preferences page.
+   4. As a user, I should be able to remain logged in unless I log out. There would be no additional data, but the user activity will be traversing through the pages.
+2. Test data
+   1. Username - i.e. Bob, ____, unregistered username
+   2. Password - i.e. BobsPassword, _____, 123abc
+3. Test environment
+   1. This will be tested in the Development environment.
+4. Test results:
+   1. Expected results
+      1. If either or both fields are empty, then the page should state that both fields are required.
+      2. If the username is a registered user but the password is incorrect, the page should display a message saying the credentials were not valid, and allow the user to try to log in again.
+      3. If the username is a registered user and the password is correct, the user should be redirected to their home page.
+      4. If the username is not a registered user, they should be redirected to the registration page.
+5. Testers: Members of the team will manually test these cases (on CU Boulder campus) and analyze the results.
+
+
+Find Matches
+1. User acceptance test cases
+   1. Should be able to find relevant matches based on book preferences
+   2. Should be able to add any matches as a friend 
+   3. Should be able to look through list of friends
+2. Test data
+   1. Usernames 
+   2. Previous Books of Users
+   3. Previously Read Authors of Users
+   4. Books on wishlist
+3. Test Environment
+   1. Developer Environment 
+4. Test Results
+   1. Whether the matches are actually relevant 
+   2. Whether the friends are properly added to the friends list
+   3. Whether the user data is correct
+5. Testers
+   1. The person working on this page 
+   2. Other people in the group who haven't worked on it
+
+
+Submit reviews
+1. User acceptance test cases
+   1. Have a field where the user can submit their reviews. Have these reviews successfully submitted to the db and viewable. 
+2. Test data
+   1. Different users
+   2. Strings of varying length
+   3. Different books associated with reviews
+3. Test environment
+   1. Local docker container (manual)
+   2. dev/staging environment
+4. Test results
+   1. If either field is empty the submit should fail and output a warning to the user.
+   2. If both fields are completed, the review should be submitted and accessible in the db. 
+   3. Reviews are viewable either by searching for a book or looking at a user’s history.
+   4. If there is a semantic error the submit should fail and a warning message should be output to the user.
+5. Testers
+   1. This group
+   2. Other teams on the CU network

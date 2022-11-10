@@ -2,8 +2,9 @@
 
 <main>
     <!--title of the wishlist page will be <username>'s wishlist-->
-    <!--pushing to personal branch-->
-    <h2 class="title">Wishlist</h2>
+    <center>
+        <h2 class="title">Wishlist</h2>
+    </center>
     <table class="table">
         <thead>
             <tr>
@@ -18,7 +19,9 @@
         <tbody>
             <!--iteratively display books in users wishlist based on their info in db/info from api call-->
             <tr>
-                <td><!--image--></td>
+                <td>
+                    <img src="https://www.adazing.com/wp-content/uploads/2018/10/book-cover_template.jpg" height="100" width="150">
+                </td>
                 <td>example book title</td>
                 <td>example book description</td>
                 <td>example book price</td>
@@ -31,7 +34,9 @@
             </tr>
         </tbody>
     </table>
-    <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
+    <center>
+        <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
+    </center>
 </main>
 
 <%- include ('../Partials/footer') %>
