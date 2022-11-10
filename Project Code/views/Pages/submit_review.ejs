@@ -4,21 +4,23 @@
 <main>
   <div class="container">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-    <form action="/login" method="POST">
+    <form action="/submitreview" method="POST">
       
-        <h1>Login</h1>
+        <h1>Submit a Review</h1>
         <div class="col-auto" >
-            <label for="username" >User name</label>
+            <label for="username" >Enter your username:</label>
             <input type="text" name="username" id="username" class="form-control" required>
           </div>
 
           <div class="col-auto" >
-            <label for="password" >Password</label>
-            <input type="text" name="password" id="password" class="form-control" required>
+            <label for="password" >Enter your review: </label>
+            <input type="text" name="review" id="review" class="form-control" required>
           </div>
+
           <div class="col"><%- include ('../partials/message') %></div>
 
-        <button id="submit_button" class="btn btn-primary" type="submit">Login</button>
+
+        <button id="submit_button" class="btn btn-primary" type="submit">Post Review</button>
         </form>
   </div>
 </main>
