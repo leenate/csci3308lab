@@ -70,7 +70,7 @@ app.get('/recommendation', (req, res) => {
 app.post('/submit_books', (req, res) => {
     //ACTUALLY SUBMIT BOOKS HERE
     res.render('Pages/login');
-
+});
 //TODO: add input to user_to_book table based on session var
 //TODO: add error checking
 app.post('/submit_books', async (req, res) => {
