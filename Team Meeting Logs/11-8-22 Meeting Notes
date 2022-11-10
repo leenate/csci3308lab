@@ -1,0 +1,51 @@
+11-8-22 Meeting Minutes:
+
+2nd team meeting with TA.
+
+  1. Progress made since the last week, including which members did what tasks:
+      Avery - added confirm password logic to Register page. 
+            - Created meeting notes/release notes, login/logout ejs files, use case diagram, and Epic field to project board.
+      Madison - Added user stories to project board, assigned team members to user stories, and added relevant ejs files.
+      Mallory - Created detailed wireframe diagram, created project board, researched APIs.
+      Nate - Added .env file, created views and partials structure. Also added docker-compose.yaml, index.js, and init_table.sql.
+      John - Created Github repository file structure, added the final testing document to Github.
+      Lucca - Worked on UI for user matches.
+      All: Created feature branches, created Test Cases (Lab 11)
+  
+  2. Plans for the next week:
+  
+      Our main priority is debugging the issues with the API key.
+      All: figure out API issues.
+      Madison - work on wishlist pages.
+      Mallory - work on search books pages.
+      Avery - work on submit/read reviews page, finalize pushing login/logout/register to main. Continue to update meeting and release notes.
+      Nate - work on submit book preferences pages.
+      John - work on find recommended users page.
+      Lucca - work on find user matches page.
+      All - work on integrating backend with frontend progress.
+
+  3. Any potential blockers or dependencies preventing us from making progress:
+      Currently our biggest blocker is issues with the GoogleBooks API.
+ 
+
+1. Decisions made:
+    N/A, but the team will be considering the book dataset suggestion.
+
+  
+2. Alternative actions/options discussed:
+  A link to a book dataset as an alternative to using GoogleBooks database was provided https://www.kaggle.com/datasets/saurabhbagchi/books-dataset.
+  https://stackoverflow.com/questions/2987433/how-to-import-csv-file-data-into-a-postgresql-table
+
+  
+3. Follow-up items, including agreed-on roles and responsibilities:
+    All: figure out API issues.
+    Show functionality working with backend by next week.
+    Update the working code in the main repository before the next meeting, but do testing on separate branches.
+    No hard coding information, write dynamic modular code.
+    
+    Madison - work on wishlist pages.
+    Mallory - work on search books pages.
+    Avery - work on submit/read reviews page, and login/logout/register. Continue to update meeting and release notes.
+    Nate - work on submit book preferences pages.
+    John - work on find recommended users page.
+    Lucca - work on find user matches page.

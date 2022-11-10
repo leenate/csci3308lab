@@ -70,7 +70,78 @@ app.get('/recommendation', (req, res) => {
 app.post('/submit_books', (req, res) => {
     //ACTUALLY SUBMIT BOOKS HERE
     res.render('Pages/login');
+
+//TODO: add input to user_to_book table based on session var
+//TODO: add error checking
+app.post('/submit_books', async (req, res) => {
+    // Split csv values into array
+    const bookPrefs = req.body.ISBN;
+    let isbnArr = bookPrefs.split(',');
+
+    var options = {
+        "async": true,
+        "crossDomain": true,
+        "method" : "GET",
+        "headers" : {
+          "CLIENT_TOKEN" : "my-api-key",
+          "cache-control": "no-cache"
+        }
+      };
+
+    // Build query by adding on the values to the base query. No error checking as of now
+    let query = "INSERT INTO books(ISBN,name) VALUES "
+    for (let i = 0; i < isbnArr.length; i++) { 
+        let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnArr[i];
+        let book = "";
+        await axios({
+               url: urlformat,
+               method: 'GET',
+               dataType:'json',
+            })
+            .then(results => {
+              results.data.items[0].volumeInfo.title;
+              console.log(results.data.items[0].volumeInfo.title);
+              book = results.data.items[0].volumeInfo.title;
+            })
+            .catch(error => {
+               console.log(error);
+            })
+
+        //if (results.totalItems) {
+            // There'll be only 1 book per ISBN
+            //let book = results.items[0];
+
+            //let title = book['volumeInfo']['title'];
+            //let subtitle = book['volumeInfo']['subtitle'];
+            //let authors = book['volumeInfo']['authors'];
+            //let printType = book['volumeInfo']['printType'];
+            //let pageCount = book['volumeInfo']['pageCount'];
+            //let publisher = book['volumeInfo']['publisher'];
+            //let publishedDate = book['volumeInfo']['publishedDate'];
+            //let webReaderLink = book['accessInfo']['webReaderLink'];
+
+            // For debugging
+            //Logger.log(book);
+            console.log("book")
+            console.log(book);
+            //let title = book['volumeInfo']['title'];
+            if(book){
+            query += "(" + isbnArr[i] + ",'" + book  + "'),";
+            }
+    }
+    query = query.substring(0,query.length - 1); // remove final comma
+    query += " RETURNING *;"
+
+    db.one(query)
+        .then(async data => {
+            res.render('Pages/wishlist');
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('Pages/wishlist');
+        });
 });
+
 // Authentication Middleware.
 const auth = (req, res, next) => {
     if (!req.session.user) {
