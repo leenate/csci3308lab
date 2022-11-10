@@ -28,14 +28,20 @@
             </thead>
             <tbody>
                 <!-- displays a portion of the database -->
-                <% book.forEach(function(book) { %>
+                <% results.forEach(function(book) { %>
                   <tr>
-                    <td><%= book.img %></td>
+                    <!-- <td><%= book.img %></td> -->
                     <td><%= book.title %></td>
                     <td><%= book.author %></td>
-                    <td><%= book.description %></td>
-                    <td><%= book.link %></td>
+                    <!-- <td><%= book.description %></td> -->
+                    <!-- <td><%= book.link %></td> -->
                     <td>
+                        <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='something'">Select Book</button>
+                    </td>
+                    <td>
+                        <button type="submit" name="remove_book" class="btn btn-danger" onclick=" ">Remove Book</button>
+                    </td>
+                    <!-- <td>
                       <% if(locals.action === 'delete'){ %>
                         <form action="/courses/delete" method="POST">
                           <input name="course_id" value="<%= course.course_id %>" type="hidden">
@@ -54,7 +60,7 @@
                           </form>
                         <% } %>
                       <% } %>
-                    </td>
+                    </td> -->
                   </tr>
                 <% }) %>
             </tbody>

@@ -144,6 +144,10 @@ const auth = (req, res, next) => {
     next();
 };
 
+app.get('/searchBooks', (req, res) => {
+    res.render('Pages/searchBooks');
+});
+
 // Authentication Required
 app.use(auth);
 
