@@ -18,3 +18,26 @@ Contributors:
   Nate: Added .env file, created views and partials structure.
   Lucca: Worked on matches UI.
   All: Created feature branches, created Test Cases (Lab 11).
+
+
+Week Two:
+Date: 11/11/22
+The below list states updates made since the previous meeting.
+
+New features:
+Added confirm password logic to register page
+All UI ejs pages have been added, but backend API calls still must be implemented
+
+Bug Fixes:
+N/A
+
+Contributors:
+Avery: Update meeting notes/release notes, created submit_review.ejs and show_reviews.ejs, and added to index.js
+Mallory: Added to menu.ejs, searchbooks.ejs, and index.js
+Madison: Updated wishlist.ejs, began working on backend API calls
+John: Added to recommendation.ejs, began working on backend API calls
+Nate: Implemented calls to the Google Books API, added post option for submit books
+Lucca: Worked on matches UI, implemented looping with test data
+
+
+All: began developing backend functionalities with the GoogleBooks API, pulled updates to main to branches, merged feature branches with main to update progress
