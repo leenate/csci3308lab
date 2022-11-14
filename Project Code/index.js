@@ -59,7 +59,7 @@ app.get('/logout', (req, res) => {
     res.render('Pages/logout');
 });
 app.get('/matches', (req, res) => {
-    const query = 'SELECT * FROM users LIMIT 10;';
+    const query = 'SELECT username FROM users LIMIT 10;';
     db.any(query)
     .then(result =>{
         console.log(result)
