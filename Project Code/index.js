@@ -64,7 +64,78 @@ app.get('/matches', (req, res) => {
 app.get('/wishlist', (req, res) => {
     res.render('Pages/wishlist');
 });
+app.get('/register', (req, res) => {
+    res.render('pages/register');
+});
+app.get('/review', (req, res) => {
+    res.render('pages/submit_review');
+});
+app.get('/reviews', (req, res) => {
+    res.render('pages/show_reviews');
+});
 
+
+// --------------------------------------------------------------------------------------------------------
+// POST REGISTER
+app.post('/register', async (req, res) => {
+    //the logic goes here
+    const username = req.body.username;
+    const password = req.body.password;
+    const confirmpw = req.body.confirmpw;
+
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const hash2 = await bcrypt.hash(req.body.confirmpw, 10);
+    if (confirmpw != password){
+      res.render('pages/register', {message: `Passwords do not match; please register again.`},)
+    }
+    
+    const q = 'INSERT INTO users (username,password) VALUES ($1,$2)' ;
+
+    db.none(q,[username,hash])
+    .then(() => {
+      res.redirect('/login'); 
+    })
+    .catch(function (err){  
+    // If the insert fails, redirect to GET /register route.
+      console.log(err);
+      res.redirect('/register'); 
+    })
+    // Redirect to GET /login route page after data has been inserted successfully.
+     
+  });
+
+// POST LOGIN
+  app.post('/login', async (req, res) => {
+    //the logic goes here
+    const password  = req.body.password;
+    const username = req.body.username;
+ 
+    const q = 'SELECT username, password FROM users WHERE username = $1' ;
+
+    db.one(q,[username])
+
+    // if no username  res.redirect('/register'); 
+    .then(async function (data){
+      const match = await bcrypt.compare(req.body.password, data.password); //await is explained in #8
+
+      if (match){   // If the user is found and password is correct, 
+        req.session.user = {
+          api_key: process.env.API_KEY,
+        };
+        req.session.save();
+        res.redirect('/discover');   //redirect to /discover route after setting the session.
+      }
+      else{   // If pwd does not match
+        res.render('pages/login', {message: `Incorrect username or password.`},)
+      } 
+    })
+    .catch(function (err){  
+     // If the database request fails, send an appropriate message to the user and render the login.ejs page.
+       res.redirect('/register'); 
+    })
+  });
+
+// --------------------------------------------------------------------------------------------------------
 //TODO: add input to user_to_book table based on session var
 //TODO: add error checking
 app.post('/submit_books', async (req, res) => {
