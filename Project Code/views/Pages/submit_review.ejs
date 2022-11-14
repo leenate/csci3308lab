@@ -1,0 +1,28 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+  <div class="container">
+    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+    <form action="/submitreview" method="POST">
+      
+        <h1>Submit a Review</h1>
+        <div class="col-auto" >
+            <label for="username" >Enter your username:</label>
+            <input type="text" name="username" id="username" class="form-control" required>
+          </div>
+
+          <div class="col-auto" >
+            <label for="password" >Enter your review: </label>
+            <input type="text" name="review" id="review" class="form-control" required>
+          </div>
+
+          <div class="col"><%- include ('../partials/message') %></div>
+
+
+        <button id="submit_button" class="btn btn-primary" type="submit">Post Review</button>
+        </form>
+  </div>
+</main>
+
+<%- include ('../partials/footer') %>
