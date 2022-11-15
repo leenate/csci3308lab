@@ -63,24 +63,74 @@ app.get('/matches', (req, res) => {
 });
 
 app.get('/wishlist', (req, res) => {
-    const query = 'SELECT * FROM books;';
-    //const query = 'SELECT * FROM books WHERE ISBN = (SELECT book_ISBN FROM user_to_book);';
-    db.any(query)
+    var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:Harry Potter';
+    axios({
+        url: url,
+        method: 'GET',
+        dataType: 'json',
+        params: {
+            "apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo',
+            "size": 10
+        } 
+    })
     .then(results => {
         console.log(results.data);
         res.render('pages/wishlist', {
             results: results.data,
         });
+    });
+});
+
+app.post('/wishlist', (req, res) => {
+    db.task('delete-book', task => {
+        return task.batch([
+            task.none(
+                `DELETE FROM 
+                user_to_book
+                WHERE
+                book_ISBN = $1
+                AND user_id = $2;`,
+                [req.session.user.user_id, parseInt(req.body.book_ISBN)]
+            ),
+            task.any(user_to_book, [req.session.user.user_id]),
+        ]);
     })
-    .catch(error => {
-        console.log(error);
+    .then(([, results]) => {
+        console.log(results.data);
+        res.render('pages/wishlist', {
+            results: results.data,
+            message: `Successfully removed ${req.body.name} from wishlist`,
+            action: 'delete',
+        });
+    })
+    .catch(err => {
         res.render('pages/wishlist', {
             results: [],
             error: true,
-            message: error.message,
+            message: err.message,
         });
     });
 });
+
+//app.get('/wishlist', (req, res) => {
+    //const query = 'SELECT * FROM books;';
+    //const query = 'SELECT * FROM books WHERE ISBN = (SELECT book_ISBN FROM user_to_book);';
+    //db.any(query)
+    //.then(results => {
+        //console.log(results.data);
+        //res.render('pages/wishlist', {
+            //results: results.data,
+        //});
+    //})
+    //.catch(error => {
+        //console.log(error);
+        //res.render('pages/wishlist', {
+            //results: [],
+            //error: true,
+            //message: error.message,
+        //});
+    //});
+//});
 
 app.get('/recommendation', (req, res) => {
     res.render('Pages/recommendation');
