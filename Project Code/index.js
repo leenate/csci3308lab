@@ -144,8 +144,75 @@ const auth = (req, res, next) => {
     next();
 };
 
-app.get('/searchBooks', (req, res) => {
-    res.render('Pages/searchBooks');
+app.get('/searchBooks', async(req, res) => {
+    //res.render('Pages/searchBooks');
+
+    var options = {
+        "async": true,
+        "crossDomain": true,
+        "method" : "GET",
+        "headers" : {
+          "CLIENT_TOKEN" : "my-api-key",
+          "cache-control": "no-cache"
+        }
+      };
+
+    // Build query by adding on the values to the base query. No error checking as of now
+    //var query = "SELECT * FROM books WHERE"
+    //for (let i = 0; i < isbnArr.length; i++) { 
+        let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + 'flowers';
+        let book = "";
+        await axios({
+               url: urlformat,
+               method: 'GET',
+               dataType:'json',
+               params: {
+                //"keyword": "flowers", //change based on search bar input value
+                "size": 10,
+                }
+            })
+            .then(results => {
+              console.log(results.data.items[0].volumeInfo.title);
+              res.render('Pages/searchBooks', {
+                results: results.data.items //.title;
+              })
+            })
+            .catch(error => {
+               console.log(error);
+               res.render('Pages/searchBooks',{
+                results: [],
+                error: true
+              })
+            })
+
+            // For debugging
+            console.log("book")
+            console.log(book);
+            
+            // if(book){
+            // query += "(" + isbnArr[i] + ",'" + book  + "'),";
+            // }
+    //}
+    //query = query.substring(0,query.length - 1); // remove final comma
+    //query += " RETURNING *;"
+
+    // db.one(query)
+    //     .then(async data => {
+    //         res.render('Pages/searchBooks');
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //         res.render('Pages/searchBooks');
+    //     });
+    // });
+    // // Authentication Middleware.
+    // const auth = (req, res, next) => {
+    //     if (!req.session.user) {
+    //       // Default to register page.
+    //       return res.redirect('/register');
+    //     }
+    //     next();
+
 });
 
 // Authentication Required
