@@ -61,9 +61,27 @@ app.get('/logout', (req, res) => {
 app.get('/matches', (req, res) => {
     res.render('Pages/matches');
 });
+
 app.get('/wishlist', (req, res) => {
-    res.render('Pages/wishlist');
+    const query = 'SELECT * FROM books;';
+    //const query = 'SELECT * FROM books WHERE ISBN = (SELECT book_ISBN FROM user_to_book);';
+    db.any(query)
+    .then(results => {
+        console.log(results.data);
+        res.render('pages/wishlist', {
+            results: results.data,
+        });
+    })
+    .catch(error => {
+        console.log(error);
+        res.render('pages/wishlist', {
+            results: [],
+            error: true,
+            message: error.message,
+        });
+    });
 });
+
 app.get('/recommendation', (req, res) => {
     res.render('Pages/recommendation');
 });

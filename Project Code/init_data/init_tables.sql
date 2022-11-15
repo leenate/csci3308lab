@@ -40,8 +40,16 @@ CREATE TABLE IF NOT EXISTS user_to_user (
 
 CREATE TABLE IF NOT EXISTS books (
   ISBN BIGINT PRIMARY KEY,
-  name VARCHAR(100)
+  Book-Title VARCHAR(1000),
+  Book-Author VARCHAR(2000),
+  Year-Of-Publication INT,
+  Publisher VARCHAR(1000),
+  Image-URL-S VARCHAR(2000),
+  Image-URL-M VARCHAR(2000),
+  Image-URL-L VARCHAR(2000)
 );
+
+COPY books FROM '/Users/maddiecrouch/3308/csci3308lab/Project Code/init_data/books.csv' WITH (FORMAT csv);
 
 CREATE TABLE IF NOT EXISTS user_to_book (
   user_id INT,
