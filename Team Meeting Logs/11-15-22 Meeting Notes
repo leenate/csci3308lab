@@ -1,0 +1,38 @@
+11-15-22 Meeting Minutes:
+
+3rd team meeting with TA.
+
+  1. Progress made since the last week, including which members did what tasks:
+      Avery - added get and post logic for login/logout page, updated meeting notes/release 
+notes, researched API calls for reviews.
+      Madison - worked on API backend for wishlist pages.
+      Mallory - worked on API backend for search books pages.
+      Nate - worked on API backend for submit book preferences pages.
+      John - worked on API backend for find recommended users page.
+      Lucca - worked on API backend for find user matches page, created dummy data
+
+  2. Plans for the next week:
+      Our main priority is continuing to develop the backend API calls
+      All: finish API backend, specifically
+      Madison - continue to work on API backend for wishlist pages.
+      Mallory - continue to work on API backend for search books pages.
+      Avery - continue to work on API backend for submit/read reviews page.
+      Nate - continue to work on API backend for submit book preferences pages.
+      John - continue to work on API backend for find recommended users page.
+      Lucca - continue to work on API backend for find user matches page.
+      All - continue to work on integrating backend with frontend progress.
+
+  3. Any potential blockers or dependencies preventing us from making progress:
+    GoogleBooks API remains our biggest blocker to work through, but progress has been made.
+ 
+
+1. Decisions made:
+	We have decided to continue with the Google Books API.
+  
+2. Alternative actions/options discussed:
+	N/A
+
+3. Follow-up items, including agreed-on roles and responsibilities:
+   All: finish API backend by end of break at latest.
+   Update the working code in the main repository before the next meeting.
+   Update project board according to progress made.
