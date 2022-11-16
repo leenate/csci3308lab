@@ -87,6 +87,7 @@ app.get('/wishlist', (req, res) => {
         });
     });
 });
+<<<<<<< HEAD
 
 app.post('/wishlist', (req, res) => {
     db.task('delete-book', task => {
@@ -139,6 +140,80 @@ app.post('/wishlist', (req, res) => {
     //});
 //});
 
+=======
+app.get('/register', (req, res) => {
+    res.render('pages/register');
+});
+app.get('/review', (req, res) => {
+    res.render('pages/submit_review');
+});
+app.get('/reviews', (req, res) => {
+    res.render('pages/show_reviews');
+});
+
+
+// --------------------------------------------------------------------------------------------------------
+// POST REGISTER
+app.post('/register', async (req, res) => {
+    //the logic goes here
+    const username = req.body.username;
+    const password = req.body.password;
+    const confirmpw = req.body.confirmpw;
+
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const hash2 = await bcrypt.hash(req.body.confirmpw, 10);
+    if (confirmpw != password){
+      res.render('pages/register', {message: `Passwords do not match; please register again.`},)
+    }
+    
+    const q = 'INSERT INTO users (username,password) VALUES ($1,$2)' ;
+
+    db.none(q,[username,hash])
+    .then(() => {
+      res.redirect('/login'); 
+    })
+    .catch(function (err){  
+    // If the insert fails, redirect to GET /register route.
+      console.log(err);
+      res.redirect('/register'); 
+    })
+    // Redirect to GET /login route page after data has been inserted successfully.
+     
+  });
+
+// POST LOGIN
+  app.post('/login', async (req, res) => {
+    //the logic goes here
+    const password  = req.body.password;
+    const username = req.body.username;
+ 
+    const q = 'SELECT username, password FROM users WHERE username = $1' ;
+
+    db.one(q,[username])
+
+    // if no username  res.redirect('/register'); 
+    .then(async function (data){
+      const match = await bcrypt.compare(req.body.password, data.password); //await is explained in #8
+
+      if (match){   // If the user is found and password is correct, 
+        req.session.user = {
+          api_key: process.env.API_KEY,
+        };
+        req.session.save();
+        res.redirect('/discover');   //redirect to /discover route after setting the session.
+      }
+      else{   // If pwd does not match
+        res.render('pages/login', {message: `Incorrect username or password.`},)
+      } 
+    })
+    .catch(function (err){  
+     // If the database request fails, send an appropriate message to the user and render the login.ejs page.
+       res.redirect('/register'); 
+    })
+  });
+
+// --------------------------------------------------------------------------------------------------------
+>>>>>>> d2294f2479ceb65b596879865d645a7988bb7424
 app.get('/recommendation', (req, res) => {
     res.render('Pages/recommendation');
 });
@@ -224,6 +299,77 @@ const auth = (req, res, next) => {
     }
     next();
 };
+
+app.get('/searchBooks', async(req, res) => {
+    //res.render('Pages/searchBooks');
+
+    var options = {
+        "async": true,
+        "crossDomain": true,
+        "method" : "GET",
+        "headers" : {
+          "CLIENT_TOKEN" : "my-api-key",
+          "cache-control": "no-cache"
+        }
+      };
+
+    // Build query by adding on the values to the base query. No error checking as of now
+    //var query = "SELECT * FROM books WHERE"
+    //for (let i = 0; i < isbnArr.length; i++) { 
+        let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + 'flowers';
+        let book = "";
+        await axios({
+               url: urlformat,
+               method: 'GET',
+               dataType:'json',
+               params: {
+                //"keyword": "flowers", //change based on search bar input value
+                "size": 10,
+                }
+            })
+            .then(results => {
+              console.log(results.data.items[0].volumeInfo.title);
+              res.render('Pages/searchBooks', {
+                results: results.data.items //.title;
+              })
+            })
+            .catch(error => {
+               console.log(error);
+               res.render('Pages/searchBooks',{
+                results: [],
+                error: true
+              })
+            })
+
+            // For debugging
+            console.log("book")
+            console.log(book);
+            
+            // if(book){
+            // query += "(" + isbnArr[i] + ",'" + book  + "'),";
+            // }
+    //}
+    //query = query.substring(0,query.length - 1); // remove final comma
+    //query += " RETURNING *;"
+
+    // db.one(query)
+    //     .then(async data => {
+    //         res.render('Pages/searchBooks');
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //         res.render('Pages/searchBooks');
+    //     });
+    // });
+    // // Authentication Middleware.
+    // const auth = (req, res, next) => {
+    //     if (!req.session.user) {
+    //       // Default to register page.
+    //       return res.redirect('/register');
+    //     }
+    //     next();
+
+});
 
 // Authentication Required
 app.use(auth);
