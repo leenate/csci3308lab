@@ -124,7 +124,7 @@ app.post('/register', async (req, res) => {
             api_key: process.env.API_KEY,
         };
         req.session.save();
-        res.redirect('/discover');   //redirect to /discover route after setting the session.
+        res.redirect('/submit_books');   //redirect to /discover route after setting the session.
       }
       else{   // If pwd does not match
         res.render('pages/login', {message: `Incorrect username or password.`},)
@@ -139,10 +139,6 @@ app.post('/register', async (req, res) => {
 // --------------------------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
     res.render('Pages/recommendation');
-});
-app.post('/submit_books', (req, res) => {
-    //ACTUALLY SUBMIT BOOKS HERE
-    res.render('Pages/login');
 });
 //TODO: add input to user_to_book table based on session var
 //TODO: add error checking
