@@ -27,12 +27,13 @@
  
 
 1. Decisions made:
-	We have decided to continue with the Google Books API.
+	We have decided to continue with the Google Books API, and a table for keeping track of users.
   
 2. Alternative actions/options discussed:
-	N/A
+	Consider asking the user when they first register specific questions for the wishlist.
 
 3. Follow-up items, including agreed-on roles and responsibilities:
    All: finish API backend by end of break at latest.
    Update the working code in the main repository before the next meeting.
    Update project board according to progress made.
+   Keep in mind how the user experience will be for the whole website, not just individual pages.
