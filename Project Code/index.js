@@ -65,13 +65,13 @@ app.get('/wishlist', (req, res) => {
     res.render('Pages/wishlist');
 });
 app.get('/register', (req, res) => {
-    res.render('pages/register');
+    res.render('Pages/register');
 });
 app.get('/review', (req, res) => {
-    res.render('pages/submit_review');
+    res.render('Pages/submit_review');
 });
 app.get('/reviews', (req, res) => {
-    res.render('pages/show_reviews');
+    res.render('Pages/show_reviews');
 });
 
 
