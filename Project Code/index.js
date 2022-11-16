@@ -78,6 +78,13 @@ app.get('/wishlist', (req, res) => {
         res.render('pages/wishlist', {
             results: results.data,
         });
+    })
+    .catch(err => {
+        res.render('pages/wishlist', {
+            results: [],
+            error: true,
+            message: err.message,
+        });
     });
 });
 
