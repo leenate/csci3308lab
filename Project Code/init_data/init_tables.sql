@@ -66,6 +66,11 @@ INSERT INTO users (username, password) VALUES ('leon', 'leon1');
 INSERT INTO users (username, password) VALUES ('micah', 'micah1');
 INSERT INTO users (username, password) VALUES ('josh', 'josh1');
 INSERT INTO users (username, password) VALUES ('pete', 'pete1');   
+INSERT INTO users (username, password) VALUES ('casey', 'casey1');
+INSERT INTO users (username, password) VALUES ('oliver', 'oliver1');
+INSERT INTO users (username, password) VALUES ('jackson', 'jackson1');
+INSERT INTO users (username, password) VALUES ('egor', 'egor1');
+INSERT INTO users (username, password) VALUES ('david', 'david1');
 
 -- To see tables
 -- \dt
