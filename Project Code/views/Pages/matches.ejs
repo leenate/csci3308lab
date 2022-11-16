@@ -20,13 +20,13 @@
         <tr>
             <th>Matches</th>
         </tr>
-        <% if (data.length != 0) { %>
-        <% for(var i=0; i<5; i++) { %>
+        <% if (matches.length != 0) { i = 1;%>
+        <% matches.forEach(function(item) { %>
             <tr>
-                <td>Match #<%=i + 1%> <%= data[i].username %></td>
+                <td>Match #<%=i%>:  <%= item.username %></td>
                 <td><button type="submit" name="add_friend" class="btn btn-success" onclick="window.location.href='later'">Add Friend</button></td>
             </tr>
-        <% } } else {%>
+        <% i = i + 1;}); } else {%>
             <tr>
                 <td>No Matches Found</td>
             </tr>
@@ -39,14 +39,13 @@
         <tr>
             <th>Friends</th>
         </tr>
-        <% if (data.length != 0) { %>
-        <% for(var i=0; i< data.length; i++) { %>
+        <% if (friends.length != 0) { i = 1;%>
+        <% friends.forEach(function(item) { %>
         <tr>
-            <td>Friend #<%=i + 1%> <%= data[i].username %></td>
-            <td>General Location</td>
+            <td>Friend #<%=i%>:  <%= item.username %></td>
             <td><img alt="Icon" style="height:25px" src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" ></td>
         </tr>
-        <% } } else {%>
+        <% i = i + 1;}); } else {%>
             <tr>
                 <td>You Currently Have No Friends</td>
             </tr>

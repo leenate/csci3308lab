@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY(user_id)
 );
 
+
 CREATE TABLE IF NOT EXISTS reviews (
   review_id INT GENERATED ALWAYS AS IDENTITY,
   reviewcontents VARCHAR(500) NOT NULL,
@@ -54,6 +55,17 @@ CREATE TABLE IF NOT EXISTS user_to_book (
     FOREIGN KEY(book_ISBN)
       REFERENCES books(ISBN)
 );
+
+-- Dummy Data
+
+INSERT INTO users (username, password) VALUES ('bella', 'bella1'); 
+INSERT INTO users (username, password) VALUES ('thomas', 'thomas1');
+INSERT INTO users (username, password) VALUES ('jared', 'jared1');  
+INSERT INTO users (username, password) VALUES ('octavio', 'octavio1'); 
+INSERT INTO users (username, password) VALUES ('leon', 'leon1');
+INSERT INTO users (username, password) VALUES ('micah', 'micah1');
+INSERT INTO users (username, password) VALUES ('josh', 'josh1');
+INSERT INTO users (username, password) VALUES ('pete', 'pete1');   
 
 -- To see tables
 -- \dt

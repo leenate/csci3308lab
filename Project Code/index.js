@@ -58,24 +58,7 @@ app.get('/bookPreferences', (req, res) => {
 app.get('/logout', (req, res) => {
     res.render('Pages/logout');
 });
-app.get('/matches', (req, res) => {
-    const query = 'SELECT username FROM users LIMIT 10;';
-    db.any(query)
-    .then(result =>{
-        console.log(result)
-        res.render('Pages/matches',{
-            data : result
-        })
-    })
-    .catch(err => {
-        console.log(err)
-        res.render('Pages/matches')
-    })
-});
-// app.get('/matches', (req, res) => {
-//     const query = `SELECT * FROM users LIMIT 10;`;
-//     res.render('Pages/matches')
-// });
+
 app.get('/wishlist', (req, res) => {
     res.render('Pages/wishlist');
 });
@@ -307,6 +290,34 @@ app.get('/searchBooks', async(req, res) => {
     //     next();
 
 });
+
+// GET MATCHES & FRIENDS
+
+app.get('/matches', (req, res) => {
+  const matches = 'SELECT username FROM users ORDER BY username ASC LIMIT 10;';
+  const friends = `SELECT username FROM users ORDER BY username DESC LIMIT 10`;
+  db.task('get-everything', task => {
+    return task.batch([
+      task.any(matches),
+      task.any(friends)
+    ]);
+  })
+  .then(data => {
+    res.status('200')
+    res.render('Pages/matches', {
+      matches: data[0],
+      friends: data[1],
+    })
+  })
+  .catch(err => {
+      console.log(err)
+      res.render('Pages/matches', {
+        matches: '',
+        friends: '',
+      })
+  })
+});
+
 
 // Authentication Required
 app.use(auth);
