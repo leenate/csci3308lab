@@ -12,7 +12,7 @@ Application Name: Cool Kids Book Application
 
 Application Description: Our application will allow you to create a user that will
 keep track of all of your reading neads. You will be able to make a profile that will keep track of previous books read
-and the user's favorite genre. You then will be able to find different people/matches who have simlar likes and add 
+and the user's favorite author. You then will be able to find different people/matches who have simlar likes and add 
 them to your friend list. Another part of the application is the recommendation tab that will give you new books
 to read based off your profile and matches.
 
