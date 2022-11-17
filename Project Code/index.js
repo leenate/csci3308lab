@@ -50,27 +50,49 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+    if (req.session.user){
+        res.redirect('/wishlist');
+    }
     res.render('Pages/login');
 });
 app.get('/bookPreferences', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
     res.render('Pages/bookPreferences');
 });
 app.get('/logout', (req, res) => {
+    req.session.destroy();
     res.render('Pages/logout');
 });
 app.get('/matches', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
     res.render('Pages/matches');
 });
 app.get('/wishlist', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
     res.render('Pages/wishlist');
 });
 app.get('/register', (req, res) => {
+    if (req.session.user){
+        res.redirect('/wishlist');
+    }
     res.render('pages/register');
 });
 app.get('/review', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
     res.render('pages/submit_review');
 });
 app.get('/reviews', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
     res.render('pages/show_reviews');
 });
 
