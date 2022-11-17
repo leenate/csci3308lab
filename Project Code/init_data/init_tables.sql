@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS books (
 
 CREATE TABLE IF NOT EXISTS user_to_book (
   user_id INT,
-  book_ISBN INT, 
+  book_ISBN BIGINT, 
   PRIMARY KEY(user_id,book_ISBN),
   CONSTRAINT fk_user_reftable
     FOREIGN KEY(user_id)
