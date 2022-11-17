@@ -5,6 +5,14 @@
     <h2 class="title">Recommendations</h2>
     <table class="table">
         <thead>
+            <div class="input-group">
+                <div class="form-outline">
+                  <input type="search" placeholder="Find Recommendation" id="find" class="form-control" />
+                </div>
+                <button type="button" class="btn btn-primary">
+                  <i class="fas fa-search">Find</i>
+                </button>
+            </div>
             <tr>
                 <th><!--book image--></th>
                 <th>Book Title</th>
@@ -16,18 +24,36 @@
         </thead>
         <tbody>
             <!--iteratively display books in users recommendation list based on their info in db/info from api call-->
-            <tr>
-                <td><!--image--></td>
-                <td>example book title</td>
-                <td>example book description</td>
-                <td>example book price</td>
-                <td>
-                    <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='something'">Select Book</button>
-                </td>
-                <td>
-                    <button type="submit" name="add_book" class="btn btn-success" onclick=" ">Add Book</button>
-                </td>
-            </tr>
+            <%
+            if(results) {
+                for (let j = 0; j < 10; j++){
+                    var title = results.items[j].volumeInfo.title;
+                    var data = Object.values(results.items[j].volumeInfo.infoLink);
+                    var image = results.items[j].volumeInfo.imageLinks;
+                    var description = results.items[j].volumeInfo.description;
+                    var link = results.items[j].volumeInfo.infoLink;
+                    if (image) {
+                %>
+                <tr>
+                    <td>
+                        <img src="<%= image.thumbnail %>">
+                    </td>
+                    <td><%= title %></td>
+                    <td><%= description %></td>
+                    <td>
+                        <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='<%= link %>'">Select Book</button>
+                    </td>
+                    <td>
+                        <form action="/wishlist" method="post">
+                            <button type="submit" name="remove_book" class="btn btn-danger">Remove Book</button>
+                        </form>
+                    </td>
+                </tr>
+                <%
+            }
+            }
+            }
+            %>
         </tbody>
     </table>
     <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
