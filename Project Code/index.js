@@ -61,6 +61,19 @@ app.get('/logout', (req, res) => {
 app.get('/matches', (req, res) => {
     res.render('Pages/matches');
 });
+app.get('/wishlist', (req, res) => {
+    res.render('Pages/wishlist');
+});
+app.get('/register', (req, res) => {
+    res.render('Pages/register');
+});
+app.get('/review', (req, res) => {
+    res.render('Pages/submit_review');
+});
+app.get('/reviews', (req, res) => {
+    res.render('Pages/show_reviews');
+});
+
 
 app.get('/wishlist', (req, res) => {
     var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:Harry Potter';
