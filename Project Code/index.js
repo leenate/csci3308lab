@@ -61,9 +61,6 @@ app.get('/logout', (req, res) => {
 app.get('/matches', (req, res) => {
     res.render('Pages/matches');
 });
-app.get('/wishlist', (req, res) => {
-    res.render('Pages/wishlist');
-});
 app.get('/register', (req, res) => {
     res.render('Pages/register');
 });
@@ -101,53 +98,33 @@ app.get('/wishlist', (req, res) => {
     });
 });
 
-app.post('/wishlist', (req, res) => {
-    db.task('delete-book', task => {
-        return task.batch([
-            task.none(
-                `DELETE FROM 
-                user_to_book
-                WHERE
-                book_ISBN = $1
-                AND user_id = $2;`,
-                [req.session.user.user_id, parseInt(req.body.book_ISBN)]
-            ),
-            task.any(user_to_book, [req.session.user.user_id]),
-        ]);
-    })
-    .then(([, results]) => {
-        console.log(results.data);
-        res.render('pages/wishlist', {
-            results: results.data,
-            message: `Successfully removed ${req.body.name} from wishlist`,
-            action: 'delete',
-        });
-    })
-    .catch(err => {
-        res.render('pages/wishlist', {
-            results: [],
-            error: true,
-            message: err.message,
-        });
-    });
-});
-
-//app.get('/wishlist', (req, res) => {
-    //const query = 'SELECT * FROM books;';
-    //const query = 'SELECT * FROM books WHERE ISBN = (SELECT book_ISBN FROM user_to_book);';
-    //db.any(query)
-    //.then(results => {
+//app.post('/wishlist', (req, res) => {
+    //db.task('delete-book', task => {
+        //return task.batch([
+            //task.none(
+                //`DELETE FROM 
+                //user_to_book
+                //WHERE
+                //book_ISBN = $1
+                //AND user_id = $2;`,
+                //[req.session.user.user_id, parseInt(req.body.book_ISBN)]
+            //),
+            //task.any(user_to_book, [req.session.user.user_id]),
+        //]);
+    //})
+    //.then(([, results]) => {
         //console.log(results.data);
         //res.render('pages/wishlist', {
             //results: results.data,
+            //message: `Successfully removed ${req.body.name} from wishlist`,
+            //action: 'delete',
         //});
     //})
-    //.catch(error => {
-        //console.log(error);
+    //.catch(err => {
         //res.render('pages/wishlist', {
             //results: [],
             //error: true,
-            //message: error.message,
+            //message: err.message,
         //});
     //});
 //});
