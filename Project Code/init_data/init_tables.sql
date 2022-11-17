@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY(user_id)
 );
 
+
 CREATE TABLE IF NOT EXISTS reviews (
   review_id INT GENERATED ALWAYS AS IDENTITY,
   reviewcontents VARCHAR(500) NOT NULL,
@@ -54,6 +55,30 @@ CREATE TABLE IF NOT EXISTS user_to_book (
     FOREIGN KEY(book_ISBN)
       REFERENCES books(ISBN)
 );
+
+-- Dummy Data
+
+INSERT INTO users (username, password) VALUES ('bella', 'bella1'); 
+INSERT INTO users (username, password) VALUES ('thomas', 'thomas1');
+INSERT INTO users (username, password) VALUES ('jared', 'jared1');  
+INSERT INTO users (username, password) VALUES ('octavio', 'octavio1'); 
+INSERT INTO users (username, password) VALUES ('leon', 'leon1');
+INSERT INTO users (username, password) VALUES ('micah', 'micah1');
+INSERT INTO users (username, password) VALUES ('josh', 'josh1');
+INSERT INTO users (username, password) VALUES ('pete', 'pete1');   
+INSERT INTO users (username, password) VALUES ('casey', 'casey1');
+INSERT INTO users (username, password) VALUES ('oliver', 'oliver1');
+INSERT INTO users (username, password) VALUES ('jackson', 'jackson1');
+INSERT INTO users (username, password) VALUES ('egor', 'egor1');
+INSERT INTO users (username, password) VALUES ('david', 'david1');
+
+-- INSERT INTO books (name) VALUES ('Acid for the Children');
+-- INSERT INTO books (name) VALUES ('Once Upon a Time in Hollywood');
+-- INSERT INTO books (name) VALUES ('The Storyteller');
+-- INSERT INTO books (name) VALUES (`Harry Potter and the Sorcerer's Stone`);
+-- INSERT INTO books (name) VALUES (`Harry Potter and the Chamber of Secrets`);
+-- INSERT INTO books (name) VALUES (`Scar Tissue`);
+-- INSERT INTO books (name) VALUES (`Men of War`);
 
 -- To see tables
 -- \dt

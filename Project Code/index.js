@@ -65,12 +65,12 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('Pages/logout');
 });
-app.get('/matches', (req, res) => {
-    if (! req.session.user){
-        res.redirect('/login');
-    }
-    res.render('Pages/matches');
-});
+// app.get('/matches', (req, res) => {
+//     if (! req.session.user){
+//         res.redirect('/login');
+//     }
+//     res.render('Pages/matches');
+// });
 app.get('/wishlist', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
@@ -380,6 +380,34 @@ app.get('/searchBooks', async(req, res) => {
             })
 
 });
+
+// GET MATCHES & FRIENDS
+
+app.get('/matches', (req, res) => {
+  const matches = 'SELECT username FROM users ORDER BY username ASC LIMIT 10;';
+  const friends = `SELECT username FROM users ORDER BY username DESC LIMIT 10`;
+  db.task('get-everything', task => {
+    return task.batch([
+      task.any(matches),
+      task.any(friends)
+    ]);
+  })
+  .then(data => {
+    res.status('200')
+    res.render('Pages/matches', {
+      matches: data[0],
+      friends: data[1],
+    })
+  })
+  .catch(err => {
+      console.log(err)
+      res.render('Pages/matches', {
+        matches: '',
+        friends: '',
+      })
+  })
+});
+
 
 // Authentication Required
 app.use(auth);
