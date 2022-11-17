@@ -65,12 +65,12 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('Pages/logout');
 });
-app.get('/matches', (req, res) => {
-    if (! req.session.user){
-        res.redirect('/login');
-    }
-    res.render('Pages/matches');
-});
+// app.get('/matches', (req, res) => {
+//     if (! req.session.user){
+//         res.redirect('/login');
+//     }
+//     res.render('Pages/matches');
+// });
 app.get('/wishlist', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');

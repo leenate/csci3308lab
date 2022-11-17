@@ -72,13 +72,13 @@ INSERT INTO users (username, password) VALUES ('jackson', 'jackson1');
 INSERT INTO users (username, password) VALUES ('egor', 'egor1');
 INSERT INTO users (username, password) VALUES ('david', 'david1');
 
-INSERT INTO books (name) VALUES ('Acid for the Children');
-INSERT INTO books (name) VALUES ('Once Upon a Time in Hollywood');
-INSERT INTO books (name) VALUES ('The Storyteller');
-INSERT INTO books (name) VALUES (`Harry Potter and the Sorcerer's Stone`);
-INSERT INTO books (name) VALUES (`Harry Potter and the Chamber of Secrets`);
-INSERT INTO books (name) VALUES (`Scar Tissue`);
-INSERT INTO books (name) VALUES (`Men of War`);
+-- INSERT INTO books (name) VALUES ('Acid for the Children');
+-- INSERT INTO books (name) VALUES ('Once Upon a Time in Hollywood');
+-- INSERT INTO books (name) VALUES ('The Storyteller');
+-- INSERT INTO books (name) VALUES (`Harry Potter and the Sorcerer's Stone`);
+-- INSERT INTO books (name) VALUES (`Harry Potter and the Chamber of Secrets`);
+-- INSERT INTO books (name) VALUES (`Scar Tissue`);
+-- INSERT INTO books (name) VALUES (`Men of War`);
 
 -- To see tables
 -- \dt
