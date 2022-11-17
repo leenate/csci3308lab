@@ -224,8 +224,8 @@ const auth = (req, res, next) => {
 
 app.get('/searchBooks', async(req, res) => {
     //res.render('Pages/searchBooks');
-    const bookSearch = req.body.search; // 'flowers'; for testing
-    console.log("search: ", req.body.search);
+    const bookSearch = req.body.beanin; // 'flowers'; for testing
+    console.log("search: ", req.body.beanin);
     
     var options = {
         "async": true,
