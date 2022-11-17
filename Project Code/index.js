@@ -224,8 +224,9 @@ const auth = (req, res, next) => {
 
 app.get('/searchBooks', async(req, res) => {
     //res.render('Pages/searchBooks');
-    const bookSearch = 'flowers'; // post testing add == req.body.search;
-
+    const bookSearch = req.body.search; // 'flowers'; for testing
+    console.log("search: ", req.body.search);
+    
     var options = {
         "async": true,
         "crossDomain": true,
@@ -239,7 +240,7 @@ app.get('/searchBooks', async(req, res) => {
     // Build query by adding on the values to the base query. No error checking as of now
     //var query = "SELECT * FROM books WHERE"
     //for (let i = 0; i < isbnArr.length; i++) { 
-        let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor' //+ bookSearch;
+        let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
         await axios({
                url: urlformat,
                method: 'GET',
