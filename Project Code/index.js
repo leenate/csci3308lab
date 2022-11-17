@@ -158,9 +158,80 @@ app.post('/register', async (req, res) => {
     })
   });
 
-// --------------------------------------------------------------------------------------------------------
+// ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
-    res.render('Pages/recommendation');
+  const find = req.body.find;
+  var options = {
+    "async": true,
+    "crossDomain": true,
+    "method" : "GET",
+    "headers" : {
+      "CLIENT_TOKEN" : "my-api-key",
+      "cache-control": "no-cache"
+    }
+  };
+  var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:'+ find;
+  axios({
+      url: url,
+      method: 'GET',
+      dataType: 'json',
+      params: {
+          "apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo',
+          "size": 10
+      } 
+  })
+  .then(results => {
+      console.log(results.data);
+      res.render('pages/recommendation', {
+          results: results.data,
+      });
+  })
+  .catch(err => {
+      res.render('pages/recommendation', {
+          results: [],
+          error: true,
+          message: err.message,
+      });
+  });
+});
+
+app.post('/recommendation', (req, res) => {
+  db.task('delete-book', task => {
+      return task.batch([
+          task.none(
+              `DELETE FROM 
+              user_to_book
+              WHERE
+              book_ISBN = $1
+              AND user_id = $2;`,
+              [req.session.user.user_id, parseInt(req.body.book_ISBN)]
+          ),
+          task.any(user_to_book, [req.session.user.user_id]),
+      ]);
+  })
+  .then(([, results]) => {
+      console.log(results.data);
+      res.render('pages/recommendation', {
+          results: results.data,
+          message: `Successfully removed ${req.body.name} from wishlist`,
+          action: 'delete',
+      });
+  })
+  .catch(err => {
+      res.render('pages/recommendation', {
+          results: [],
+          error: true,
+          message: err.message,
+      });
+  });
+});
+
+// app.get('/recommendation', (req, res) => {
+//     res.render('Pages/recommendation');
+// });
+app.post('/submit_books', (req, res) => {
+    //ACTUALLY SUBMIT BOOKS HERE
+    res.render('Pages/login');
 });
 //TODO: add input to user_to_book table based on session var
 //TODO: add error checking
