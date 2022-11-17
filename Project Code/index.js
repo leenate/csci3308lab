@@ -71,15 +71,6 @@ app.get('/matches', (req, res) => {
     }
     res.render('Pages/matches');
 });
-<<<<<<< HEAD
-=======
-app.get('/wishlist', (req, res) => {
-    if (! req.session.user){
-        res.redirect('/login');
-    }
-    res.render('Pages/wishlist');
-});
->>>>>>> 15fdcc8fc875b57a9aa103472841428a77a43189
 app.get('/register', (req, res) => {
     if (req.session.user){
         res.redirect('/wishlist');
@@ -99,34 +90,70 @@ app.get('/reviews', (req, res) => {
     res.render('pages/show_reviews');
 });
 
+const user_wishlist = `
+    SELECT DISTINCT
+        books.ISBN,
+        books.name,
+        users.user_id = $1 AS "user_books"
+    FROM
+        books
+        JOIN user_to_book ON books.ISBN = users.user_id
+        JOIN users ON user_to_book.user_id = users.user_id
+    WHERE users.user_id = $1
+    ORDER BY books.name ASC;`;
+
+const all_books = `SELECT * FROM books;`;
 
 app.get('/wishlist', (req, res) => {
-    var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:Harry Potter';
-    axios({
-        url: url,
-        method: 'GET',
-        dataType: 'json',
-        params: {
-            "apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo',
-            "size": 10
-        } 
-    })
-    .then(results => {
-        console.log(results.data);
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+    const user_books = req.query.user_books;
+    db.any(user_books ? user_wishlist : all_books, [req.session.user.user_id])
+    .then(books => {
         res.render('pages/wishlist', {
-            results: results.data,
+            books,
+            action: req.query.user_books ? 'delete' : 'add',
         });
     })
     .catch(err => {
         res.render('pages/wishlist', {
-            results: [],
+            user_books: [],
             error: true,
             message: err.message,
         });
     });
 });
 
-<<<<<<< HEAD
+//app.get('/wishlist', (req, res) => {
+    //if (! req.session.user){
+        //res.redirect('/login');
+    //}
+    //var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:Harry Potter';
+    //axios({
+        //url: url,
+        //method: 'GET',
+        //dataType: 'json',
+        //params: {
+            //"apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo',
+            //"size": 10
+        //} 
+    //})
+    //.then(results => {
+        //console.log(results.data);
+        //res.render('pages/wishlist', {
+            //results: results.data,
+        //});
+    //})
+    //.catch(err => {
+        //res.render('pages/wishlist', {
+            //results: [],
+            //error: true,
+            //message: err.message,
+        //});
+    //});
+//});
+
 //app.post('/wishlist', (req, res) => {
     //db.task('delete-book', task => {
         //return task.batch([
@@ -157,25 +184,6 @@ app.get('/wishlist', (req, res) => {
         //});
     //});
 //});
-=======
-      if (match){   // If the user is found and password is correct, 
-        req.session.user = {
-            username: data.username,
-            api_key: process.env.API_KEY,
-        };
-        req.session.save();
-        res.redirect('/submit_books');   //redirect to /discover route after setting the session.
-      }
-      else{   // If pwd does not match
-        res.render('pages/login', {message: `Incorrect username or password.`},)
-      } 
-    })
-    .catch(function (err){  
-     // If the database request fails, send an appropriate message to the user and render the login.ejs page.
-       res.redirect('/register'); 
-    })
-  });
->>>>>>> 15fdcc8fc875b57a9aa103472841428a77a43189
 
 app.get('/recommendation', (req, res) => {
     res.render('Pages/recommendation');
