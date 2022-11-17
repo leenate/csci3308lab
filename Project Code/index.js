@@ -50,25 +50,53 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+    if (req.session.user){
+        res.redirect('/wishlist');
+    }
     res.render('Pages/login');
 });
 app.get('/bookPreferences', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
     res.render('Pages/bookPreferences');
 });
 app.get('/logout', (req, res) => {
+    req.session.destroy();
     res.render('Pages/logout');
 });
 app.get('/matches', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
     res.render('Pages/matches');
 });
+<<<<<<< HEAD
+=======
+app.get('/wishlist', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+    res.render('Pages/wishlist');
+});
+>>>>>>> 15fdcc8fc875b57a9aa103472841428a77a43189
 app.get('/register', (req, res) => {
-    res.render('Pages/register');
+    if (req.session.user){
+        res.redirect('/wishlist');
+    }
+    res.render('pages/register');
 });
 app.get('/review', (req, res) => {
-    res.render('Pages/submit_review');
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+    res.render('pages/submit_review');
 });
 app.get('/reviews', (req, res) => {
-    res.render('Pages/show_reviews');
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+    res.render('pages/show_reviews');
 });
 
 
@@ -98,6 +126,7 @@ app.get('/wishlist', (req, res) => {
     });
 });
 
+<<<<<<< HEAD
 //app.post('/wishlist', (req, res) => {
     //db.task('delete-book', task => {
         //return task.batch([
@@ -128,13 +157,28 @@ app.get('/wishlist', (req, res) => {
         //});
     //});
 //});
+=======
+      if (match){   // If the user is found and password is correct, 
+        req.session.user = {
+            username: data.username,
+            api_key: process.env.API_KEY,
+        };
+        req.session.save();
+        res.redirect('/submit_books');   //redirect to /discover route after setting the session.
+      }
+      else{   // If pwd does not match
+        res.render('pages/login', {message: `Incorrect username or password.`},)
+      } 
+    })
+    .catch(function (err){  
+     // If the database request fails, send an appropriate message to the user and render the login.ejs page.
+       res.redirect('/register'); 
+    })
+  });
+>>>>>>> 15fdcc8fc875b57a9aa103472841428a77a43189
 
 app.get('/recommendation', (req, res) => {
     res.render('Pages/recommendation');
-});
-app.post('/submit_books', (req, res) => {
-    //ACTUALLY SUBMIT BOOKS HERE
-    res.render('Pages/login');
 });
 //TODO: add input to user_to_book table based on session var
 //TODO: add error checking
@@ -154,6 +198,20 @@ app.post('/submit_books', async (req, res) => {
       };
 
     // Build query by adding on the values to the base query. No error checking as of now
+    let user_id = "";
+    query2 = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
+    console.log(query2);
+    await db.one(query2)
+        .then(function (data){
+            console.log(data);
+            console.log("data")
+            user_id=data.user_id;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    
+    let associationQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ";
     let query = "INSERT INTO books(ISBN,name) VALUES "
     for (let i = 0; i < isbnArr.length; i++) { 
         let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnArr[i];
@@ -191,15 +249,26 @@ app.post('/submit_books', async (req, res) => {
             console.log(book);
             //let title = book['volumeInfo']['title'];
             if(book){
-            query += "(" + isbnArr[i] + ",'" + book  + "'),";
+                query += "(" + isbnArr[i] + ",'" + book  + "'),";
+                associationQuery += "(" + user_id + "," + isbnArr[i] + "),";
             }
     }
     query = query.substring(0,query.length - 1); // remove final comma
+    associationQuery = associationQuery.substring(0,associationQuery.length - 1); // remove final comma
     query += " RETURNING *;"
+    associationQuery += " RETURNING *;"
+    console.log(req.session.user.username)
 
     db.one(query)
         .then(async data => {
-            res.render('Pages/wishlist');
+            db.one(associationQuery)
+                .then(async data => {
+                    res.render('Pages/wishlist');
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.render('Pages/wishlist');
+                });
         })
         .catch(err => {
             console.log(err);
