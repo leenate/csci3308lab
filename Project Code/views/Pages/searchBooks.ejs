@@ -4,12 +4,13 @@
   <div class="container">
     <h2 class="title">Search Books</h2>
     <!-- THE SEARCH FUNCTION -->
-    <form action="/searchBooks" method = "GET">
+    <form action="/searchBooks/search" method = "POST">
         <input type="text" name="beanin" id="beanin" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
         <button type="submit" class="btn btn-outline-primary">search</button>
     </form>
     <!-- BOOK SEARCH DISPLAY -->
     <div>
+      <% if (results != 0) { %>
         <table class="table">
             <thead>
                 <tr>
@@ -25,7 +26,13 @@
                 <!-- displays a portion of the database -->
                 <% results.forEach(function(book) { %>
                   <tr>
-                    <td><img src="<%= book.volumeInfo.imageLinks.thumbnail %>"></td>
+                    <td>
+                      <% if(book.volumeInfo.imageLinks) { %>
+                        <img src="<%= book.volumeInfo.imageLinks.thumbnail %>">
+                      <% } else { %>
+                        <p>no image</p>
+                      <% } %>
+                    </td>
                     <td><%= book.volumeInfo.title %></td>
                     <td><%= book.volumeInfo.authors %></td>
                     <td><%= book.volumeInfo.description %></td>
@@ -39,6 +46,7 @@
                 <% }) %>
             </tbody>
         </table>
+        <% } %>
         <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/wishlist">here</a> to view your wishlist!</small>
     </div>
   </div>
