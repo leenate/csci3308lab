@@ -339,8 +339,8 @@ const auth = (req, res, next) => {
 
 app.get('/searchBooks', async(req, res) => {
     //res.render('Pages/searchBooks');
-    const bookSearch = req.body.beanin; // 'flowers'; for testing
-    console.log("search: ", req.body.beanin);
+    const bookSearch = req.body.beanin; //'flowers'; //for testing
+    console.log("search: ", req.body);
     
     var options = {
         "async": true,
@@ -352,32 +352,29 @@ app.get('/searchBooks', async(req, res) => {
         }
       };
 
-    // Build query by adding on the values to the base query. No error checking as of now
-    //var query = "SELECT * FROM books WHERE"
-    //for (let i = 0; i < isbnArr.length; i++) { 
-        let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
-        await axios({
-               url: urlformat,
-               method: 'GET',
-               dataType:'json',
-               params: {
-                //"keyword": "flowers", //change based on search bar input value
-                "size": 10,
-                }
+    let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
+    await axios({
+            url: urlformat,
+            method: 'GET',
+            dataType:'json',
+            params: {
+            //"keyword": "flowers", //change based on search bar input value
+            "size": 10,
+            }
+        })
+        .then(results => {
+            console.log(results.data.items[0].volumeInfo.title);
+            res.render('Pages/searchBooks', {
+            results: results.data.items
             })
-            .then(results => {
-              console.log(results.data.items[0].volumeInfo.title);
-              res.render('Pages/searchBooks', {
-                results: results.data.items //.title;
-              })
+        })
+        .catch(error => {
+            console.log(error);
+            res.render('Pages/searchBooks',{
+            results: [],
+            error: true
             })
-            .catch(error => {
-               console.log(error);
-               res.render('Pages/searchBooks',{
-                results: [],
-                error: true
-              })
-            })
+        })
 
 });
 

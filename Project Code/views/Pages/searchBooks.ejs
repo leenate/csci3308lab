@@ -4,8 +4,8 @@
   <div class="container">
     <h2 class="title">Search Books</h2>
     <!-- THE SEARCH FUNCTION -->
-    <form method = "GET" action="/searchBooks">
-        <input type="text" name="beanin" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+    <form action="/searchBooks" method = "GET">
+        <input type="text" name="beanin" id="beanin" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
         <button type="submit" class="btn btn-outline-primary">search</button>
     </form>
     <!-- BOOK SEARCH DISPLAY -->
