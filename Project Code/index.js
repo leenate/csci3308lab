@@ -415,7 +415,7 @@ app.post('/searchBooks/search', async(req, res) => {
             error: true
             })
         })
-    });
+});
 
 // GET MATCHES & FRIENDS
 
