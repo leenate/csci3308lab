@@ -394,27 +394,27 @@ app.post('/searchBooks/search', async(req, res) => {
 
     let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
     await axios({
-            url: urlformat,
-            method: 'GET',
-            dataType:'json',
-            params: {
-            //"keyword": "flowers", //change based on search bar input value
-            "size": 10,
-            }
+        url: urlformat,
+        method: 'GET',
+        dataType:'json',
+        params: {
+        //"keyword": "flowers", //change based on search bar input value
+        "size": 10,
+        }
+    })
+    .then(results => {
+        console.log(results.data.items[0].volumeInfo.title);
+        res.render('Pages/searchBooks', {
+        results: results.data.items
         })
-        .then(results => {
-            console.log(results.data.items[0].volumeInfo.title);
-            res.render('Pages/searchBooks', {
-            results: results.data.items
-            })
+    })
+    .catch(error => {
+        console.log(error);
+        res.render('Pages/searchBooks',{
+        results: [],
+        error: true
         })
-        .catch(error => {
-            console.log(error);
-            res.render('Pages/searchBooks',{
-            results: [],
-            error: true
-            })
-        })
+    })
 });
 
 // GET MATCHES & FRIENDS
