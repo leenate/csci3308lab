@@ -1,4 +1,4 @@
-Week 1:
+Week One:
 
 Date: 11/4/22
 The below list states updates made since the previous meeting.
@@ -41,3 +41,25 @@ Lucca: Worked on matches UI, implemented looping with test data
 
 
 All: began developing backend functionalities with the GoogleBooks API, pulled updates to main to branches, merged feature branches with main to update progress
+
+Week Three:
+Date: 11/18/22
+The below list states updates made since the previous meeting.
+
+New features:
+API calls implemented, though not all functionalities are fully completed.
+
+Bug Fixes:
+N/A
+
+Contributors:
+Avery: researched API calls to get reviews page, planned dummy data for user reviews.
+Mallory: added API calls to search book.
+Madison: added API calls to wish list.
+John: worked on find recommended books pages.
+Nate: added API calls to book preferences.
+Lucca: added more features to find matches/add friend, planned dummy data for friends.
+
+
+All: implemented backend functionalities with the GoogleBooks API, pulled updates to main to branches, merged feature branches with main to update progress.
+
