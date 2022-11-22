@@ -72,6 +72,8 @@ INSERT INTO users (username, password) VALUES ('jackson', 'jackson1');
 INSERT INTO users (username, password) VALUES ('egor', 'egor1');
 INSERT INTO users (username, password) VALUES ('david', 'david1');
 
+
+
 -- INSERT INTO books (name) VALUES ('Acid for the Children');
 -- INSERT INTO books (name) VALUES ('Once Upon a Time in Hollywood');
 -- INSERT INTO books (name) VALUES ('The Storyteller');
