@@ -65,12 +65,12 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('Pages/logout');
 });
-app.get('/matches', (req, res) => {
-    if (! req.session.user){
-        res.redirect('/login');
-    }
-    res.render('Pages/matches');
-});
+// app.get('/matches', (req, res) => {
+//     if (! req.session.user){
+//         res.redirect('/login');
+//     }
+//     res.render('Pages/matches');
+// });
 app.get('/wishlist', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
@@ -158,9 +158,80 @@ app.post('/register', async (req, res) => {
     })
   });
 
-// --------------------------------------------------------------------------------------------------------
+// ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
-    res.render('Pages/recommendation');
+  const find = req.body.find;
+  var options = {
+    "async": true,
+    "crossDomain": true,
+    "method" : "GET",
+    "headers" : {
+      "CLIENT_TOKEN" : "my-api-key",
+      "cache-control": "no-cache"
+    }
+  };
+  var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:'+ find;
+  axios({
+      url: url,
+      method: 'GET',
+      dataType: 'json',
+      params: {
+          "apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo',
+          "size": 10
+      } 
+  })
+  .then(results => {
+      console.log(results.data);
+      res.render('pages/recommendation', {
+          results: results.data,
+      });
+  })
+  .catch(err => {
+      res.render('pages/recommendation', {
+          results: [],
+          error: true,
+          message: err.message,
+      });
+  });
+});
+
+app.post('/recommendation', (req, res) => {
+  db.task('delete-book', task => {
+      return task.batch([
+          task.none(
+              `DELETE FROM 
+              user_to_book
+              WHERE
+              book_ISBN = $1
+              AND user_id = $2;`,
+              [req.session.user.user_id, parseInt(req.body.book_ISBN)]
+          ),
+          task.any(user_to_book, [req.session.user.user_id]),
+      ]);
+  })
+  .then(([, results]) => {
+      console.log(results.data);
+      res.render('pages/recommendation', {
+          results: results.data,
+          message: `Successfully removed ${req.body.name} from wishlist`,
+          action: 'delete',
+      });
+  })
+  .catch(err => {
+      res.render('pages/recommendation', {
+          results: [],
+          error: true,
+          message: err.message,
+      });
+  });
+});
+
+// app.get('/recommendation', (req, res) => {
+//     res.render('Pages/recommendation');
+// });
+app.post('/submit_books', (req, res) => {
+    //ACTUALLY SUBMIT BOOKS HERE
+    res.render('Pages/login');
 });
 //TODO: add input to user_to_book table based on session var
 //TODO: add error checking
@@ -268,7 +339,9 @@ const auth = (req, res, next) => {
 
 app.get('/searchBooks', async(req, res) => {
     //res.render('Pages/searchBooks');
-
+    const bookSearch = req.body.beanin; //'flowers'; //for testing
+    console.log("search: ", req.body);
+    
     var options = {
         "async": true,
         "crossDomain": true,
@@ -279,63 +352,98 @@ app.get('/searchBooks', async(req, res) => {
         }
       };
 
-    // Build query by adding on the values to the base query. No error checking as of now
-    //var query = "SELECT * FROM books WHERE"
-    //for (let i = 0; i < isbnArr.length; i++) { 
-        let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + 'flowers';
-        let book = "";
-        await axios({
-               url: urlformat,
-               method: 'GET',
-               dataType:'json',
-               params: {
-                //"keyword": "flowers", //change based on search bar input value
-                "size": 10,
-                }
+    let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
+    await axios({
+            url: urlformat,
+            method: 'GET',
+            dataType:'json',
+            params: {
+            //"keyword": "flowers", //change based on search bar input value
+            "size": 10,
+            }
+        })
+        .then(results => {
+            console.log(results.data.items[0].volumeInfo.title);
+            res.render('Pages/searchBooks', {
+            results: results.data.items
             })
-            .then(results => {
-              console.log(results.data.items[0].volumeInfo.title);
-              res.render('Pages/searchBooks', {
-                results: results.data.items //.title;
-              })
+        })
+        .catch(error => {
+            console.log(error);
+            res.render('Pages/searchBooks',{
+            results: [],
+            error: true
             })
-            .catch(error => {
-               console.log(error);
-               res.render('Pages/searchBooks',{
-                results: [],
-                error: true
-              })
-            })
-
-            // For debugging
-            console.log("book")
-            console.log(book);
-            
-            // if(book){
-            // query += "(" + isbnArr[i] + ",'" + book  + "'),";
-            // }
-    //}
-    //query = query.substring(0,query.length - 1); // remove final comma
-    //query += " RETURNING *;"
-
-    // db.one(query)
-    //     .then(async data => {
-    //         res.render('Pages/searchBooks');
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //         res.render('Pages/searchBooks');
-    //     });
-    // });
-    // // Authentication Middleware.
-    // const auth = (req, res, next) => {
-    //     if (!req.session.user) {
-    //       // Default to register page.
-    //       return res.redirect('/register');
-    //     }
-    //     next();
+        })
 
 });
+app.post('/searchBooks/search', async(req, res) => {
+    //res.render('Pages/searchBooks');
+    const bookSearch = req.body.beanin; //'flowers'; //for testing
+    console.log("search: ", req.body);
+    
+    var options = {
+        "async": true,
+        "crossDomain": true,
+        "method" : "GET",
+        "headers" : {
+          "CLIENT_TOKEN" : "my-api-key",
+          "cache-control": "no-cache"
+        }
+      };
+
+    let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
+    await axios({
+        url: urlformat,
+        method: 'GET',
+        dataType:'json',
+        params: {
+        //"keyword": "flowers", //change based on search bar input value
+        "size": 10,
+        }
+    })
+    .then(results => {
+        console.log(results.data.items[0].volumeInfo.title);
+        res.render('Pages/searchBooks', {
+        results: results.data.items
+        })
+    })
+    .catch(error => {
+        console.log(error);
+        res.render('Pages/searchBooks',{
+        results: [],
+        error: true
+        })
+    })
+});
+
+// GET MATCHES & FRIENDS
+
+app.get('/matches', (req, res) => {
+  const matches = 'SELECT username FROM users ORDER BY username ASC LIMIT 10;';
+  const friends = `SELECT username FROM users ORDER BY username DESC LIMIT 10`;
+  db.task('get-everything', task => {
+    return task.batch([
+      task.any(matches),
+      task.any(friends)
+    ]);
+  })
+  .then(data => {
+    res.status('200')
+    res.render('Pages/matches', {
+      matches: data[0],
+      friends: data[1],
+    })
+  })
+  .catch(err => {
+      console.log(err)
+      res.render('Pages/matches', {
+        matches: '',
+        friends: '',
+      })
+  })
+});
+
 
 // Authentication Required
 app.use(auth);
