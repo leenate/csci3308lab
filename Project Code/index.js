@@ -235,9 +235,13 @@ app.get('/submit_books', (req, res) => {
 //TODO: add input to user_to_book table based on session var
 //TODO: add error checking
 app.post('/submit_books', async (req, res) => {
-    // Split csv values into array
-    const bookPrefs = req.body.ISBN;
-    let isbnArr = bookPrefs.split(',');
+    let ISBN1 = req.body.ISBN1;
+    let ISBN2 = req.body.ISBN2;
+    let ISBN3 = req.body.ISBN3;
+    let ISBN4 = req.body.ISBN4;
+    let ISBN5 = req.body.ISBN5;
+    let isbnArr = [ISBN1, ISBN2, ISBN3, ISBN4, ISBN5];
+    console.table(isbnArr);
 
     var options = {
         "async": true,
@@ -265,7 +269,10 @@ app.post('/submit_books', async (req, res) => {
     
     let associationQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ";
     let query = "INSERT INTO books(ISBN,name) VALUES "
+    console.log("HERE");
+    console.log(isbnArr[0]);
     for (let i = 0; i < isbnArr.length; i++) { 
+        console.log(isbnArr[i]);
         let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnArr[i];
         let book = "";
         await axios({
@@ -299,6 +306,9 @@ app.post('/submit_books', async (req, res) => {
             //Logger.log(book);
             console.log("book")
             console.log(book);
+            if (book == undefined || book == "" || isbnArr[i] == undefined || isbnArr[i] == "") { 
+                continue
+            }
             //let title = book['volumeInfo']['title'];
             if(book){
                 query += "(" + isbnArr[i] + ",'" + book  + "'),";
@@ -307,13 +317,14 @@ app.post('/submit_books', async (req, res) => {
     }
     query = query.substring(0,query.length - 1); // remove final comma
     associationQuery = associationQuery.substring(0,associationQuery.length - 1); // remove final comma
-    query += " RETURNING *;"
-    associationQuery += " RETURNING *;"
-    console.log(req.session.user.username)
+    query += " ON CONFLICT DO NOTHING;"
+    associationQuery += " ON CONFLICT DO NOTHING;"
+    console.log(query)
+    console.log(associationQuery)
 
-    db.one(query)
+    db.oneOrNone(query)
         .then(async data => {
-            db.one(associationQuery)
+            db.oneOrNone(associationQuery)
                 .then(async data => {
                     res.redirect('/wishlist');
                 })
