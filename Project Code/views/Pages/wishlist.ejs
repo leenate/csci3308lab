@@ -19,36 +19,46 @@
         </thead>
         <tbody>
         <!--iteratively display books in users wishlist based on their info in db/info from api call-->
-            <%
-            if(results) {
-                for (let j = 0; j < 10; j++){
-                    var title = results.items[j].volumeInfo.title;
-                    var data = Object.values(results.items[j].volumeInfo.infoLink);
-                    var image = results.items[j].volumeInfo.imageLinks;
-                    var description = results.items[j].volumeInfo.description;
-                    var link = results.items[j].volumeInfo.infoLink;
-                    if (image) {
-                %>
-                <tr>
-                    <td>
-                        <img src="<%= image.thumbnail %>">
-                    </td>
-                    <td><%= title %></td>
-                    <td><%= description %></td>
-                    <td>
-                        <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='<%= link %>'">Select Book</button>
-                    </td>
-                    <td>
-                        <form action="/wishlist" method="post">
-                            <button type="submit" name="remove_book" class="btn btn-danger">Remove Book</button>
-                        </form>
-                    </td>
-                </tr>
-                <%
-            }
-            }
-            }
-            %>
+            <% if (books) { %>
+                <% if (books.length == 0) { %>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>You have no books in your wishlist.</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                <% } %>
+                <% books.forEach(function(item) { %>
+                    <tr>
+                        <td><%= item.length %></td>
+                    </tr>
+                    <% if (item.length == 0) { %>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>You have no books in your wishlist.</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    <% }  else { %>
+                    <% for (let j = 0; j <= item.length; j++ ) { %>
+                        <% const item1 = item[j]; %>
+                    <tr>
+                        <td>Book Image</td>
+                        <td><%= item1.name %></td>
+                        <td>Book Description</td>
+                        <td>
+                            <button type="submit" name="go_to_book" class="btn btn-success" onclick="">Select Book</button>
+                        </td>
+                        <td>
+                            <button type="submit" name="remove_book" class="btn btn-danger" onclick="">Remove Book</button>
+                        </td>
+                    </tr>
+                    <% } %>
+                    <% } %>
+                    <% }) %>
+                <% } %>
         </tbody>
     </table>
 </main>

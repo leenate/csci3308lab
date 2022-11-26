@@ -71,12 +71,12 @@ app.get('/logout', (req, res) => {
 //     }
 //     res.render('Pages/matches');
 // });
-app.get('/wishlist', (req, res) => {
-    if (! req.session.user){
-        res.redirect('/login');
-    }
-    res.render('Pages/wishlist');
-});
+//app.get('/wishlist', (req, res) => {
+    //if (! req.session.user){
+        //res.redirect('/login');
+    //}
+    //res.render('Pages/wishlist');
+//});
 app.get('/register', (req, res) => {
     if (req.session.user){
         res.redirect('/wishlist');
@@ -96,66 +96,141 @@ app.get('/reviews', (req, res) => {
     res.render('pages/show_reviews');
 });
 
-const user_wishlist = `
-    SELECT DISTINCT
-        books.ISBN,
-        books.name,
-        users.user_id = $1 AS "user_books"
-    FROM
-        books
-        JOIN user_to_book ON books.ISBN = users.user_id
-        JOIN users ON user_to_book.user_id = users.user_id
-    WHERE users.user_id = $1
-    ORDER BY books.name ASC;`;
 
-const all_books = `SELECT * FROM books;`;
+// --------------------------------------------------------------------------------------------------------
+// POST REGISTER
+app.post('/register', async (req, res) => {
+    //the logic goes here
+    const username = req.body.username;
+    const password = req.body.password;
+    const confirmpw = req.body.confirmpw;
+
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const hash2 = await bcrypt.hash(req.body.confirmpw, 10);
+    if (confirmpw != password){
+      res.render('pages/register', {message: `Passwords do not match; please register again.`},)
+    }
+    
+    const q = 'INSERT INTO users (username,password) VALUES ($1,$2)' ;
+
+    db.none(q,[username,hash])
+    .then(() => {
+      res.redirect('/login'); 
+    })
+    .catch(function (err){  
+    // If the insert fails, redirect to GET /register route.
+      console.log(err);
+      res.redirect('/register'); 
+    })
+    // Redirect to GET /login route page after data has been inserted successfully.
+     
+  });
+
+// POST LOGIN
+  app.post('/login', async (req, res) => {
+    //the logic goes here
+    const password  = req.body.password;
+    const username = req.body.username;
+ 
+    const q = 'SELECT username, password FROM users WHERE username = $1' ;
+
+    db.one(q,[username])
+
+    // if no username  res.redirect('/register'); 
+    .then(async function (data){
+      const match = await bcrypt.compare(req.body.password, data.password); //await is explained in #8
+
+      if (match){   // If the user is found and password is correct, 
+        req.session.user = {
+            username: data.username,
+            api_key: process.env.API_KEY,
+        };
+        req.session.save();
+        res.redirect('/submit_books');   //redirect to /discover route after setting the session.
+      }
+      else{   // If pwd does not match
+        res.render('pages/login', {message: `Incorrect username or password.`},)
+      } 
+    })
+    .catch(function (err){  
+     // If the database request fails, send an appropriate message to the user and render the login.ejs page.
+       res.redirect('/register'); 
+    })
+  });
+
+//simpler wishlist w/o axios
 
 app.get('/wishlist', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    const user_books = req.query.user_books;
-    db.any(user_books ? user_wishlist : all_books, [req.session.user.user_id])
-    .then(books => {
+
+    const query = `SELECT * FROM books WHERE ISBN = (SELECT book_isbn FROM user_to_book WHERE user_id = '`+ req.session.user.user_id +`');`;
+    db.task('get-books', task => {
+        return task.batch([
+            task.any(query)
+        ]);
+    })
+    .then(data => {
+        res.status('200')
         res.render('pages/wishlist', {
-            books,
-            action: req.query.user_books ? 'delete' : 'add',
-        });
+            books: data, 
+        })
     })
     .catch(err => {
+        console.log(err)
         res.render('pages/wishlist', {
-            user_books: [],
+            books: [],
             error: true,
             message: err.message,
         });
     });
 });
 
-//app.get('/wishlist', (req, res) => {
+//TO-DO: finish get/wishlist with axios
+
+//app.get('/wishlist', async (req, res) => {
     //if (! req.session.user){
         //res.redirect('/login');
     //}
-    //var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:Harry Potter';
-    //axios({
-        //url: url,
-        //method: 'GET',
-        //dataType: 'json',
-        //params: {
-            //"apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo',
-            //"size": 10
-        //} 
+    //let isbn = [];
+    //const query = `SELECT book_ISBN FROM user_to_book WHERE user_id = '` + req.session.user.user_id + `';`;
+    //console.log(query);
+    //await db.one(query)
+        //.then(data => {
+            //console.log(data);
+            //console.log("data")
+            //isbn = data;
     //})
-    //.then(results => {
-        //console.log(results.data);
+    //isbn.forEach(async function(i) {
+        //let url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + i;
+        //await axios({
+            //url: url,
+            //method: 'GET',
+            //dataType: 'json',
+            //params: {
+                //"apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo'
+            //}
+        //})
+        //.then(results => {
+            //console.log(results);
+            //i = results;
+        //})
+        //.catch(err => {
+            //console.log(err);
+        //})
+    //})
+//db.one(isbn)
+    //.then(function(results) {
+        //res.status('200');
         //res.render('pages/wishlist', {
-            //results: results.data,
-        //});
+            //books: results,
+        //})
     //})
     //.catch(err => {
+        //console.log(err)
         //res.render('pages/wishlist', {
-            //results: [],
-            //error: true,
-            //message: err.message,
+        //books: [],
         //});
     //});
 //});
