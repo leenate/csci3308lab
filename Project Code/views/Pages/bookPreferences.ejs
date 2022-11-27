@@ -30,7 +30,7 @@
 
       <tbody>
           <% if (results) { var rows='' ; results.forEach(function(item){ 
-              rows += '<tr><td><a>' + item.name + '</a></td></tr>';
+              rows += '<tr><td><a>' + item.name + '</a></td><td><img src=' + item.imageloct  + ' style="max-width: 30%;"></td><td><form action="/removeFromPreferences/' + item.isbn + '" method="post"><button type="submit" name="remove_book" class="btn btn-danger" style="float:right">Remove Book</button></form></td></tr>';
             }); %>
             <%- rows %>
           <% } %> 
