@@ -3,14 +3,39 @@
 <main>
   <div class="container">
     <form style="text-align:center;" method="post" action="/submit_books">
-
-      <h4 style="padding-top:10%">Enter a csv list of your favorite books' ISBN number</h4>
-      <input type="text" name="ISBN" id="books" class="form-control" style="padding-top:5%">
+      <div class="col"><%- include ('../partials/message') %></div>
+      <h4 style="padding-top:5%">Enter your favorite books' ISBN</h4>
+      <div class="form-group">
+      <input type="text" name="ISBN1" id="books" class="form-control">
+      </div>
+      <br>
+      <input type="text" name="ISBN2" id="books" class="form-control">
+      <br>
+      <input type="text" name="ISBN3" id="books" class="form-control" >
+      <br>
+      <input type="text" name="ISBN4" id="books" class="form-control">
+      <br>
+      <input type="text" name="ISBN5" id="books" class="form-control">
       <br>
       <button class="btn btn-success">
         submit 
       </button>
     </form>
+    <table class="table">
+      <thead>
+          <tr>
+              <th scope="col">Already Liked Books</th>
+          </tr>
+      </thead>
+
+      <tbody>
+          <% if (results) { var rows='' ; results.forEach(function(item){ 
+              rows += '<tr><td><a>' + item.name + '</a></td></tr>';
+            }); %>
+            <%- rows %>
+          <% } %> 
+      </tbody>
+    </table>
   </div>
 </main>
 <%- include ('../partials/footer') %>
