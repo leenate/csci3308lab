@@ -12,8 +12,6 @@
             <tr>
                 <th><!--book image--></th>
                 <th>Book Title</th>
-                <th>Book Description</th>
-                <th><!--button to go to book on goodreads--></th>
                 <th><!--button to remove book from wishlist--></th>
             </tr>
         </thead>
@@ -23,22 +21,15 @@
                 <% if (books.length == 0) { %>
                     <tr>
                         <td></td>
-                        <td></td>
                         <td>You have no books in your wishlist.</td>
-                        <td></td>
                         <td></td>
                     </tr>
                 <% } %>
                 <% books.forEach(function(item) { %>
-                    <tr>
-                        <td><%= item.length %></td>
-                    </tr>
                     <% if (item.length == 0) { %>
                         <tr>
                             <td></td>
-                            <td></td>
-                            <td>You have no books in your wishlist.</td>
-                            <td></td>
+                            <td><%= user %>: You have no books in your wishlist.</td>
                             <td></td>
                         </tr>
                     <% }  else { %>
@@ -47,10 +38,6 @@
                     <tr>
                         <td>Book Image</td>
                         <td><%= item1.name %></td>
-                        <td>Book Description</td>
-                        <td>
-                            <button type="submit" name="go_to_book" class="btn btn-success" onclick="">Select Book</button>
-                        </td>
                         <td>
                             <button type="submit" name="remove_book" class="btn btn-danger" onclick="">Remove Book</button>
                         </td>

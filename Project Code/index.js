@@ -158,29 +158,47 @@ app.post('/register', async (req, res) => {
     })
   });
 
+app.get('/users', (req, res) => {
+    //const user = "SELECT DISTINCT books.name, books.ISBN FROM books JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = daisy;";
+    const user = "SELECT * FROM user_to_book;";
+    db.task('fucking_work', task => {
+        return task.batch([
+            task.any(user)
+        ]);
+    })
+    .then(rows => {
+        res.send(rows);
+    })
+    .catch(err => {
+        console.log(err);
+    });
+});
+
 //simpler wishlist w/o axios
 
 app.get('/wishlist', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-
-    const query = `SELECT * FROM books WHERE ISBN = (SELECT book_isbn FROM user_to_book WHERE user_id = '`+ req.session.user.user_id +`');`;
+    const username = req.session.user.username;
+    const query = "SELECT DISTINCT books.name, books.ISBN FROM books JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + username + "';";
     db.task('get-books', task => {
         return task.batch([
             task.any(query)
         ]);
     })
     .then(data => {
-        res.status('200')
+        res.status('200');
         res.render('pages/wishlist', {
-            books: data, 
+            books: data,
+            user: username, 
         })
     })
     .catch(err => {
         console.log(err)
         res.render('pages/wishlist', {
             books: [],
+            user: '',
             error: true,
             message: err.message,
         });
