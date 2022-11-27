@@ -59,7 +59,7 @@ app.get('/bookPreferences', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    res.render('Pages/bookPreferences');
+    res.redirect('/submit_books');
 });
 app.get('/logout', (req, res) => {
     req.session.destroy();
@@ -230,7 +230,22 @@ app.post('/recommendation', (req, res) => {
 //     res.render('Pages/recommendation');
 // });
 app.get('/submit_books', (req, res) => {
-    res.render('Pages/bookPreferences');
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+    query = "SELECT books.name FROM books JOIN user_to_book ON books.isbn = user_to_book.book_isbn JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
+    db.any(query)
+        .then(async results => {
+            res.render('Pages/bookPreferences',{
+                "results": results
+              });
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('Pages/bookPreferences',{
+                "results": results
+              });
+        });
 });
 //TODO: add input to user_to_book table based on session var
 //TODO: add error checking
@@ -241,7 +256,6 @@ app.post('/submit_books', async (req, res) => {
     let ISBN4 = req.body.ISBN4;
     let ISBN5 = req.body.ISBN5;
     let isbnArr = [ISBN1, ISBN2, ISBN3, ISBN4, ISBN5];
-    console.table(isbnArr);
 
     var options = {
         "async": true,
@@ -256,11 +270,8 @@ app.post('/submit_books', async (req, res) => {
     // Build query by adding on the values to the base query. No error checking as of now
     let user_id = "";
     query2 = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
-    console.log(query2);
     await db.one(query2)
         .then(function (data){
-            console.log(data);
-            console.log("data")
             user_id=data.user_id;
         })
         .catch(err => {
@@ -268,10 +279,12 @@ app.post('/submit_books', async (req, res) => {
         });
     
     let associationQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ";
-    let query = "INSERT INTO books(ISBN,name) VALUES "
-    console.log("HERE");
-    console.log(isbnArr[0]);
+    let query = "INSERT INTO books(ISBN,name) VALUES ";
+    let count = 0;
     for (let i = 0; i < isbnArr.length; i++) { 
+        if (isbnArr[i] == "") {
+            continue;
+        }
         console.log(isbnArr[i]);
         let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnArr[i];
         let book = "";
@@ -282,30 +295,12 @@ app.post('/submit_books', async (req, res) => {
             })
             .then(results => {
               results.data.items[0].volumeInfo.title;
-              console.log(results.data.items[0].volumeInfo.title);
               book = results.data.items[0].volumeInfo.title;
             })
             .catch(error => {
                console.log(error);
             })
 
-        //if (results.totalItems) {
-            // There'll be only 1 book per ISBN
-            //let book = results.items[0];
-
-            //let title = book['volumeInfo']['title'];
-            //let subtitle = book['volumeInfo']['subtitle'];
-            //let authors = book['volumeInfo']['authors'];
-            //let printType = book['volumeInfo']['printType'];
-            //let pageCount = book['volumeInfo']['pageCount'];
-            //let publisher = book['volumeInfo']['publisher'];
-            //let publishedDate = book['volumeInfo']['publishedDate'];
-            //let webReaderLink = book['accessInfo']['webReaderLink'];
-
-            // For debugging
-            //Logger.log(book);
-            console.log("book")
-            console.log(book);
             if (book == undefined || book == "" || isbnArr[i] == undefined || isbnArr[i] == "") { 
                 continue
             }
@@ -313,14 +308,17 @@ app.post('/submit_books', async (req, res) => {
             if(book){
                 query += "(" + isbnArr[i] + ",'" + book  + "'),";
                 associationQuery += "(" + user_id + "," + isbnArr[i] + "),";
+                count++;
             }
+    }
+    if (count == 0){
+        res.render('Pages/bookPreferences', {message: "No books were added"});
+        return;
     }
     query = query.substring(0,query.length - 1); // remove final comma
     associationQuery = associationQuery.substring(0,associationQuery.length - 1); // remove final comma
     query += " ON CONFLICT DO NOTHING;"
     associationQuery += " ON CONFLICT DO NOTHING;"
-    console.log(query)
-    console.log(associationQuery)
 
     db.oneOrNone(query)
         .then(async data => {
