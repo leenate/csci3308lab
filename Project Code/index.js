@@ -274,7 +274,7 @@ app.get('/submit_books', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    query = "SELECT books.name FROM books JOIN user_to_book ON books.isbn = user_to_book.book_isbn JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
+    query = "SELECT books.name,books.imageloct,books.isbn FROM books JOIN user_to_book ON books.isbn = user_to_book.book_isbn JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
     db.any(query)
         .then(async results => {
             res.render('Pages/bookPreferences',{
@@ -288,8 +288,28 @@ app.get('/submit_books', (req, res) => {
               });
         });
 });
-//TODO: add input to user_to_book table based on session var
-//TODO: add error checking
+
+app.post('/removeFromPreferences/:isbn', async (req, res) => {
+    query_for_userid = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
+    user_id="";
+    await db.one(query_for_userid)
+        .then(function (data){
+            user_id=data.user_id;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    delete_query = "DELETE FROM user_to_book WHERE user_id = " + user_id + " AND book_isbn = " + req.params.isbn +  ";";
+    console.log(delete_query);
+    db.none(delete_query)
+        .then(function (data){
+            res.redirect('/submit_books');
+        })
+        .catch(err => {
+            console.log(err);
+            res.redirect('/submit_books');
+        });
+});
 app.post('/submit_books', async (req, res) => {
     let ISBN1 = req.body.ISBN1;
     let ISBN2 = req.body.ISBN2;
@@ -320,7 +340,7 @@ app.post('/submit_books', async (req, res) => {
         });
     
     let associationQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ";
-    let query = "INSERT INTO books(ISBN,name) VALUES ";
+    let query = "INSERT INTO books(ISBN,name,imageloct) VALUES ";
     let count = 0;
     for (let i = 0; i < isbnArr.length; i++) { 
         if (isbnArr[i] == "") {
@@ -329,14 +349,17 @@ app.post('/submit_books', async (req, res) => {
         console.log(isbnArr[i]);
         let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnArr[i];
         let book = "";
+        let imageloct = "";
         await axios({
                url: urlformat,
                method: 'GET',
                dataType:'json',
             })
             .then(results => {
-              results.data.items[0].volumeInfo.title;
-              book = results.data.items[0].volumeInfo.title;
+                console.log(results.data.items[0].volumeInfo.imageLinks.smallThumbnail);
+                results.data.items[0].volumeInfo.title;
+                book = results.data.items[0].volumeInfo.title;
+                imageloct = results.data.items[0].volumeInfo.imageLinks.smallThumbnail;
             })
             .catch(error => {
                console.log(error);
@@ -347,7 +370,7 @@ app.post('/submit_books', async (req, res) => {
             }
             //let title = book['volumeInfo']['title'];
             if(book){
-                query += "(" + isbnArr[i] + ",'" + book  + "'),";
+                query += "(" + isbnArr[i] + ",'" + book  + "','" +  imageloct + "'),";
                 associationQuery += "(" + user_id + "," + isbnArr[i] + "),";
                 count++;
             }
@@ -360,6 +383,8 @@ app.post('/submit_books', async (req, res) => {
     associationQuery = associationQuery.substring(0,associationQuery.length - 1); // remove final comma
     query += " ON CONFLICT DO NOTHING;"
     associationQuery += " ON CONFLICT DO NOTHING;"
+    console.log(query);
+    console.log(associationQuery);
 
     db.oneOrNone(query)
         .then(async data => {
