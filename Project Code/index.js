@@ -146,7 +146,8 @@ app.post('/register', async (req, res) => {
             api_key: process.env.API_KEY,
         };
         req.session.save();
-        res.redirect('/submit_books');   //redirect to /discover route after setting the session.
+        // CHANGE THIS BACK TO /submit_books
+        res.redirect('/wishlist');   //redirect to /discover route after setting the session.
       }
       else{   // If pwd does not match
         res.render('pages/login', {message: `Incorrect username or password.`},)
@@ -159,6 +160,7 @@ app.post('/register', async (req, res) => {
   });
 
 app.get('/users', (req, res) => {
+    //const user = 'SELECT books.name FROM books INNER JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN INNER JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = "Sadie";';
     //const user = "SELECT DISTINCT books.name, books.ISBN FROM books JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = daisy;";
     const user = "SELECT * FROM user_to_book;";
     db.task('fucking_work', task => {
@@ -181,7 +183,7 @@ app.get('/wishlist', (req, res) => {
         res.redirect('/login');
     }
     const username = req.session.user.username;
-    const query = "SELECT DISTINCT books.name, books.ISBN FROM books JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + username + "';";
+    const query = "SELECT * FROM books INNER JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN INNER JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + username + "';";
     db.task('get-books', task => {
         return task.batch([
             task.any(query)
@@ -199,6 +201,37 @@ app.get('/wishlist', (req, res) => {
         res.render('pages/wishlist', {
             books: [],
             user: '',
+            error: true,
+            message: err.message,
+        });
+    });
+});
+
+app.post('/wishlist', (req, res) => {
+    db.task('delete-book', task => {
+        return task.batch([
+            task.none(
+                `DELETE FROM 
+                user_to_book
+                WHERE
+                book_ISBN = $1
+                AND user_id = (SELECT user_id FROM users WHERE username = $2);`,
+                [parseInt(req.body.book_ISBN), req.session.user.username,]
+            ),
+            task.any(user_to_book, [req.session.user.user_id]),
+        ]);
+    })
+    .then(([, results]) => {
+        console.log(results.data);
+        res.render('pages/wishlist', {
+            results: results.data,
+            message: `Successfully removed ${req.body.name} from wishlist`,
+            action: 'delete',
+        });
+    })
+    .catch(err => {
+        res.render('pages/wishlist', {
+            results: [],
             error: true,
             message: err.message,
         });
@@ -249,37 +282,6 @@ app.get('/wishlist', (req, res) => {
         //console.log(err)
         //res.render('pages/wishlist', {
         //books: [],
-        //});
-    //});
-//});
-
-//app.post('/wishlist', (req, res) => {
-    //db.task('delete-book', task => {
-        //return task.batch([
-            //task.none(
-                //`DELETE FROM 
-                //user_to_book
-                //WHERE
-                //book_ISBN = $1
-                //AND user_id = $2;`,
-                //[req.session.user.user_id, parseInt(req.body.book_ISBN)]
-            //),
-            //task.any(user_to_book, [req.session.user.user_id]),
-        //]);
-    //})
-    //.then(([, results]) => {
-        //console.log(results.data);
-        //res.render('pages/wishlist', {
-            //results: results.data,
-            //message: `Successfully removed ${req.body.name} from wishlist`,
-            //action: 'delete',
-        //});
-    //})
-    //.catch(err => {
-        //res.render('pages/wishlist', {
-            //results: [],
-            //error: true,
-            //message: err.message,
         //});
     //});
 //});

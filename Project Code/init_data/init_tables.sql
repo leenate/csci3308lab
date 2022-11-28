@@ -73,6 +73,15 @@ INSERT INTO users (username, password) VALUES ('jackson', 'jackson1');
 INSERT INTO users (username, password) VALUES ('egor', 'egor1');
 INSERT INTO users (username, password) VALUES ('david', 'david1');
 
+INSERT INTO user_to_book (user_id, book_isbn) VALUES (82, 1);
+INSERT INTO user_to_book (user_id, book_isbn) VALUES (82, 2);
+INSERT INTO user_to_book (user_id, book_isbn) VALUES (82, 3);
+INSERT INTO user_to_book (user_id, book_isbn) VALUES (82, 4);
+INSERT INTO user_to_book (user_id, book_isbn) VALUES (81, 1);
+INSERT INTO user_to_book (user_id, book_isbn) VALUES (81, 2);
+INSERT INTO user_to_book (user_id, book_isbn) VALUES (81, 3);
+INSERT INTO user_to_book (user_id, book_isbn) VALUES (81, 4);
+
 -- INSERT INTO books (name) VALUES ('Acid for the Children');
 -- INSERT INTO books (name) VALUES ('Once Upon a Time in Hollywood');
 -- INSERT INTO books (name) VALUES ('The Storyteller');

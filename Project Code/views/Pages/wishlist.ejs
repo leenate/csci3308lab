@@ -3,43 +3,66 @@
 <main>
     <!--title of the wishlist page will be <username>'s wishlist-->
     <center>
-        <h2 class="title">Wishlist</h2>
-        <form action=""></form>
-        <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
+        <h2 class="title"><%= user %>'s Wishlist:</h2>
     </center>
+    <!--
     <table class="table">
         <thead>
             <tr>
-                <th><!--book image--></th>
+                <th>book image</th>
                 <th>Book Title</th>
-                <th><!--button to remove book from wishlist--></th>
+                <th>button to remove book from wishlist</th>
             </tr>
         </thead>
         <tbody>
+        -->
         <!--iteratively display books in users wishlist based on their info in db/info from api call-->
             <% if (books) { %>
                 <% if (books.length == 0) { %>
+                    <center>
+                        <h5><%= user %>: You have no books in your wishlist.</h5>
+                    </center>
+                    <!--
                     <tr>
                         <td></td>
                         <td>You have no books in your wishlist.</td>
                         <td></td>
                     </tr>
+                -->
                 <% } %>
                 <% books.forEach(function(item) { %>
                     <% if (item.length == 0) { %>
+                        <center>
+                            <h5><%= user %>: You have no books in your wishlist.</h5>
+                        </center>
+                        <!--
                         <tr>
                             <td></td>
-                            <td><%= user %>: You have no books in your wishlist.</td>
+                            <td><%= //user %>: You have no books in your wishlist.</td>
                             <td></td>
                         </tr>
+                    -->
                     <% }  else { %>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>book image</th>
+                                    <th>Book Title</th>
+                                    <th>button to remove book from wishlist</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                     <% for (let j = 0; j <= item.length; j++ ) { %>
                         <% const item1 = item[j]; %>
                     <tr>
-                        <td>Book Image</td>
+                        <td><%= item1.imageloct %></td>
                         <td><%= item1.name %></td>
                         <td>
-                            <button type="submit" name="remove_book" class="btn btn-danger" onclick="">Remove Book</button>
+                            <form action="/wishlist" method="POST">
+                                <div class="form-group">
+                                    <button type="submit" name="remove_book" class="btn btn-danger">Remove Book</button>
+                                </div>
+                            </form>
                         </td>
                     </tr>
                     <% } %>
@@ -48,6 +71,9 @@
                 <% } %>
         </tbody>
     </table>
+    <center>
+        <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
+    </center>
 </main>
 
 <%- include ('../Partials/footer') %>
