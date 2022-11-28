@@ -162,8 +162,8 @@ app.post('/register', async (req, res) => {
 app.get('/users', (req, res) => {
     //const user = 'SELECT books.name FROM books INNER JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN INNER JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = "Sadie";';
     //const user = "SELECT DISTINCT books.name, books.ISBN FROM books JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = daisy;";
-    const user = "SELECT * FROM user_to_book;";
-    db.task('fucking_work', task => {
+    const user = "SELECT * FROM books;";
+    db.task('get-everything', task => {
         return task.batch([
             task.any(user)
         ]);
