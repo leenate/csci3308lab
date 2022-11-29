@@ -40,7 +40,8 @@ Nate: Implemented calls to the Google Books API, added post option for submit bo
 Lucca: Worked on matches UI, implemented looping with test data
 
 
-All: began developing backend functionalities with the GoogleBooks API, pulled updates to main to branches, merged feature branches with main to update progress
+All: began developing backend functionalities with the GoogleBooks API, pulled updates to main to branches,
+merged feature branches with main to update progress
 
 Week Three:
 Date: 11/18/22
@@ -61,5 +62,29 @@ Nate: added API calls to book preferences.
 Lucca: added more features to find matches/add friend, planned dummy data for friends.
 
 
-All: implemented backend functionalities with the GoogleBooks API, pulled updates to main to branches, merged feature branches with main to update progress.
+All: implemented backend functionalities with the GoogleBooks API, pulled updates to main to branches, 
+merged feature branches with main to update progress.
 
+Week Four:
+
+Week Four:
+Date: 11/29/22
+The below list states updates made since the previous meeting.
+
+New features:
+Functionalities completed for submit and show reviews, find and add matches, search books, book preferences, 
+
+Bug Fixes:
+N/A
+
+Contributors:
+      Avery - completed submit and show reviews pages, including a top 5 reviews portion. 
+      Created the Project report and Project Presentation, significant progress made on both.
+      Madison - completed the wishlist page.
+      Mallory - completed the search books page.
+      Nate - completed the submit book preferences page.
+      John - completed the find recommended users page.
+      Lucca - completed the user matches page.
+
+
+All: completed individual pages, pulled updates to main to branches, merged feature branches with main to update progress.
