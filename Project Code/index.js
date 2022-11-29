@@ -414,7 +414,12 @@ const auth = (req, res, next) => {
 // SEARCH BOOKS PAGE
 app.get('/searchBooks', async(req, res) => {
     //res.render('Pages/searchBooks');
-    const bookSearch = 'flowers'; //for testing
+    
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+
+    const bookSearch = req.body.beanin; //'flowers'; //for testing
     //console.log("search: ", req.body);
     
     var options = {
@@ -438,7 +443,7 @@ app.get('/searchBooks', async(req, res) => {
             }
         })
         .then(results => {
-            console.log(results.data.items[0].volumeInfo);
+            console.log(results.data.items[0].volumeInfo.title);
             res.render('Pages/searchBooks', {
             results: results.data.items
             })
@@ -478,7 +483,7 @@ app.post('/searchBooks/search', async(req, res) => {
         }
     })
     .then(results => {
-        console.log(results.data.items[0].volumeInfo);
+        console.log('ISBN: ', results.data.items[0].volumeInfo.industryIdentifiers[0].identifier);
         res.render('Pages/searchBooks', {
         results: results.data.items
         })
@@ -492,16 +497,40 @@ app.post('/searchBooks/search', async(req, res) => {
     })
 });
 app.post('/searchBooks/add', async(req, res) => {
-    console.log('book ID to add: ', req.body.book_title)
+    
+    var options = {
+        "async": true,
+        "crossDomain": true,
+        "method" : "GET",
+        "headers" : {
+          "CLIENT_TOKEN" : "my-api-key",
+          "cache-control": "no-cache"
+        }
+      };
+    
+    let user_id = "";
+    let queryA = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
+    await db.one(queryA)
+    .then(function (data){
+        user_id = data.user_id;
+        console.log('user found');
+    })
+    .catch(err => {
+        console.log(err);
+    });
+    
+    console.log('book title to add: ', req.body.book_title)
+    console.log('book ISBN: ', req.body.book_ISBN)
     const bookSearch = req.body.beanin;
 
-    const query = 'INSERT INTO books(ISBN, name) VALUES($1, $2);';
-    db.none(query, [
-        req.body.book_ISBN,
-        req.body.book_title
-    ])
-    .then(() => {console.log('added success')})
-    .catch(err => {console.log('failed to add')})
+    const gettumQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ($1, $2);";
+    const queryB = "INSERT INTO books(ISBN, name, imageloct) VALUES($1, $2, $3);";
+    // db.none(query, [
+    //     req.body.book_ISBN,
+    //     req.body.book_title
+    // ])
+    // .then(() => {console.log('added success')})
+    // .catch(err => {console.log('failed to add')})
 
     let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
     await axios({
@@ -514,16 +543,39 @@ app.post('/searchBooks/add', async(req, res) => {
         }
     })
     .then(results => {
-        res.render('pages/searchBooks', {
-            results: results.data.items,
-            message: `Successfully added book`
-        })
+        db.none(queryB, [req.body.book_ISBN, req.body.book_title, req.body.book_image])
+            .then(async data => {
+                db.oneOrNone(gettumQuery, [user_id, req.body.book_ISBN])
+                    .then(async data => {
+                        res.render('Pages/searchBooks', {
+                            results: results.data.items,
+                            Message: `Successfully added book`
+                        });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.render('Pages/searchBooks', {
+                            results: results.data.items,
+                            error: true,
+                            message: `Sorry, something went wrong`
+                        })
+                    });
+            })
+            .catch(err => {
+                console.log(err);
+                res.render('Pages/searchBooks', {
+                    results: results.data.items,
+                    error: true,
+                    message: `Sorry, something went wrong`
+                })
+            });
     })
     .catch(err => {
-        res.render('pages/searchBooks', {
-        results: [],
-        error: true,
-        message: `Sorry, something went wrong`
+        console.log(err);
+        res.render('Pages/searchBooks', {
+            results: [],
+            error: true,
+            message: `Sorry, something went wrong`
         })
     }) 
 });
