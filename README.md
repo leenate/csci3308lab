@@ -8,25 +8,25 @@ the books in the api. You will also be able to make a wishlist where you put dif
 would like to read in the future. 
 
 Contributors:
-John Otterbein, github username JOHNOTTERBEIN
-Avery Mccauley, github username AveryMcCauley
-Mallory Prescott, github username PVMALLARD
-Nathaniel Lee, github username leenate
-Lucca Quintela, github username BellaIsStinky
-Madison Crouch, github username madisoncrouch
+John Otterbein (github username JOHNOTTERBEIN),
+Avery Mccauley (github username AveryMcCauley),
+Mallory Prescott (github username PVMALLARD),
+Nathaniel Lee (github username leenate),
+Lucca Quintela (github username BellaIsStinky),
+Madison Crouch (github username madisoncrouch),
 
 Technology Stack:
 Docker
 git
 shell
-google
-vs code
+Google Chrome Browser
+Visual Studio Code IDE
 
 Prerequisites:
-You will need to download docker and a shell that you prefer to run programs on. Then once you get the program running you will need a internet browser to show the program
+You will need to download Docker and a shell that you prefer to run programs on. Then once you get the program running you will need a internet browser to show the program.
 
 Instructions:
 The first step is downloading the program. Then you want to open up your shell and move into the directory where the program is located. Then you should move into the project code and then you can run the docker compose up to get the docker running. Then from here all you have to do is type localhost:3000 in your browser of choice and the website should be running.
 
 Link to deployed application:
-NA
+N/A

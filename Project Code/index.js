@@ -93,7 +93,30 @@ app.get('/reviews', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    res.render('pages/show_reviews');
+    const topreviews = `SELECT title, username,reviewcontents,stars FROM reviews ORDER BY stars DESC LIMIT 5`;
+    const reviews = `SELECT title, username,reviewcontents,stars FROM reviews`;
+
+        db.task('get-everything', task => {
+          return task.batch([
+            task.any(topreviews),
+            task.any(reviews)
+          ]);
+        })
+        .then(data => {
+          res.status(200)
+          res.render('Pages/show_reviews', {
+            topreviews: data[0],
+            reviews: data[1]
+          })
+        })
+        .catch(err => {
+            console.log(err)
+            res.render('Pages/show_reviews', {
+              topreviews: '',
+              reviews: ''
+            })
+        })
+    
 });
 
 
@@ -123,11 +146,10 @@ app.post('/register', async (req, res) => {
       res.redirect('/register'); 
     })
     // Redirect to GET /login route page after data has been inserted successfully.
-     
   });
 
 // POST LOGIN
-  app.post('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     //the logic goes here
     const password  = req.body.password;
     const username = req.body.username;
@@ -157,7 +179,26 @@ app.post('/register', async (req, res) => {
        res.redirect('/register'); 
     })
   });
+app.post('/submitreview', async (req, res) => {
+    //the logic goes here
+    const t = req.body.title;
+    const un = req.session.user.username;
+    const s = req.body.star;
+    const r  = req.body.review;
+    
+    const q = 'INSERT INTO reviews (title,username,stars,reviewcontents) VALUES ($1,$2,$3,$4)' ;
 
+    db.none(q,[t,un,s,r])
+    .then(() => {
+      res.redirect('/reviews'); 
+    })
+    .catch(function (err){  
+    // If the insert fails, redirect to GET /register route.
+      console.log(err);
+      res.redirect('/review'); 
+    })
+    // Redirect to GET /login route page after data has been inserted successfully.
+  });
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
   const find = req.body.find;
