@@ -20,10 +20,11 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS reviews (
   review_id INT GENERATED ALWAYS AS IDENTITY,
-  reviewcontents VARCHAR(500) NOT NULL,
-  username VARCHAR(50),
   title VARCHAR(50),
-  user_id INT NOT NULL,
+  username VARCHAR(50),
+  reviewcontents VARCHAR(500) NOT NULL,
+  stars INT NOT NULL,
+  user_id INT,
   CONSTRAINT fk_user_review
     FOREIGN KEY(user_id)
       REFERENCES users(user_id)

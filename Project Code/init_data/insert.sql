@@ -20,27 +20,24 @@ INSERT INTO public.users(username,password) VALUES
 ('Violet','123'),
 ('Sadie','123');
 
-INSERT INTO public.reviews(reviewcontents,user_id) VALUES
-('This book was amazing!',1),
-('This book was horrible!',2),
-('This book was cool!',3),
-('This book was bad!',4),
-('This book was medium-ok!',5),
-('This book was ok!',6),
-('This book was iffy!',7),
-('This book was terrible!',8),
-('This book was the worst!',9),
-('This book was the best!',10),
-('This book was awesome!',11),
-('This book was awe-some!',12),
-('This book was my favorite!',13),
-('This book was really cool!',14),
-('This book was really bad!',15),
-('This book was offending!',16),
-('This book was bad !',17),
-('This book was lorem!',18),
-('This book was ipsum!',19),
-('This book was dummy text!',20);
+INSERT INTO public.reviews(title,username, reviewcontents, stars, user_id) VALUES
+('Grapes of Wrath','Maeve','This book was amazing!',5,1),
+('Lord of the Flies','Luna','This book was horrible!',1,2),
+('How to Invent Everything','Aurelia','This book was cool!',4,3),
+('Treasure Island','Eloise','This book was bad!',4,2),
+('Catcher in the Rye','Isla','This book was medium-ok!',3,5),
+('The Bean Trees','Ophelia','This book was ok!',3,6),
+('The Bell Jar','Aurora','This book was iffy!',2,7),
+('Animal Farm','Eleanor','This book was terrible!',1,8),
+('The American Heritage Dictionary','Alice','This book was the worst!',1,9),
+('Travels With Charlie','Ava','This book was the best!',5,10),
+('Cannery Row','Charlotte','This book was awesome!',5,11),
+('East of Eden','Elodie','This book was awe-some!',5,12),
+('To Kill a Mockingbird','Iris','This book was my favorite!',5,13),
+('Great Expectations','Freya','This book was really cool!',4,14),
+('Robinson Crusoe','Amelia','This book was really bad!',1,15),
+('One Hundred Years of Solitude','Clara','This book was offending!',1,16),
+('Invitation to a Beheading','Daphne','This book was bad !',2,17);
 
 INSERT INTO public.books(isbn,name) VALUES
 (1,'fakebook1'),
