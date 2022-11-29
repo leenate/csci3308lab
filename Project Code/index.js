@@ -411,10 +411,11 @@ const auth = (req, res, next) => {
     next();
 };
 
+// SEARCH BOOKS PAGE
 app.get('/searchBooks', async(req, res) => {
     //res.render('Pages/searchBooks');
-    const bookSearch = req.body.beanin; //'flowers'; //for testing
-    console.log("search: ", req.body);
+    const bookSearch = 'flowers'; //for testing
+    //console.log("search: ", req.body);
     
     var options = {
         "async": true,
@@ -437,7 +438,7 @@ app.get('/searchBooks', async(req, res) => {
             }
         })
         .then(results => {
-            console.log(results.data.items[0].volumeInfo.title);
+            console.log(results.data.items[0].volumeInfo);
             res.render('Pages/searchBooks', {
             results: results.data.items
             })
@@ -477,7 +478,7 @@ app.post('/searchBooks/search', async(req, res) => {
         }
     })
     .then(results => {
-        console.log(results.data.items[0].volumeInfo.title);
+        console.log(results.data.items[0].volumeInfo);
         res.render('Pages/searchBooks', {
         results: results.data.items
         })
@@ -489,6 +490,42 @@ app.post('/searchBooks/search', async(req, res) => {
         error: true
         })
     })
+});
+app.post('/searchBooks/add', async(req, res) => {
+    console.log('book ID to add: ', req.body.book_title)
+    const bookSearch = req.body.beanin;
+
+    const query = 'INSERT INTO books(ISBN, name) VALUES($1, $2);';
+    db.none(query, [
+        req.body.book_ISBN,
+        req.body.book_title
+    ])
+    .then(() => {console.log('added success')})
+    .catch(err => {console.log('failed to add')})
+
+    let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
+    await axios({
+        url: urlformat,
+        method: 'GET',
+        dataType:'json',
+        params: {
+        //"keyword": "flowers", //change based on search bar input value
+        "size": 10,
+        }
+    })
+    .then(results => {
+        res.render('pages/searchBooks', {
+            results: results.data.items,
+            message: `Successfully added book`
+        })
+    })
+    .catch(err => {
+        res.render('pages/searchBooks', {
+        results: [],
+        error: true,
+        message: `Sorry, something went wrong`
+        })
+    }) 
 });
 
 // GET MATCHES & FRIENDS
