@@ -1,9 +1,42 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 <main>
+    <div class="container">
+        <h1>Top Five Reviews</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Username</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <!-- displays a portion of the database -->
+                <% if (topreviews) { %>
+                <% if (topreviews.length != 0) { i = 1;%>
+                <% topreviews.forEach(function(item) { %>
+                <tr>
+                   <td> <%= item.title %></td>
+                   <td> <%= item.username %></td>
+                   <td> <%= item.stars %></td>
+                   <td> <%= item.reviewcontents %></td>
+                </tr>
+                <% i = i + 1;}); } } else {%>
+                    <tr>
+                        <td>No reviews have been submited</td>
+                    </tr>
+                <% } %>
+               
+            </tbody>
+        </table>
+        <a href="/review" class="btn btn-primary">Submit a book review</a>
+    </div>
 
     <div class="container">
-        <h1>Reviews</h1>
+        <h1>All Reviews</h1>
         <table class="table">
             <thead>
                 <tr>
@@ -33,7 +66,6 @@
                
             </tbody>
         </table>
-        <a href="/review" >Submit a book review</a>
     </div>
 </main>
 

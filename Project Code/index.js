@@ -93,24 +93,30 @@ app.get('/reviews', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-        const reviews = `SELECT title, username,reviewcontents,stars FROM reviews`;
+    const topreviews = `SELECT title, username,reviewcontents,stars FROM reviews ORDER BY stars DESC LIMIT 5`;
+    const reviews = `SELECT title, username,reviewcontents,stars FROM reviews`;
+
         db.task('get-everything', task => {
           return task.batch([
+            task.any(topreviews),
             task.any(reviews)
           ]);
         })
         .then(data => {
           res.status(200)
           res.render('Pages/show_reviews', {
-            reviews: data[0],
+            topreviews: data[0],
+            reviews: data[1]
           })
         })
         .catch(err => {
             console.log(err)
             res.render('Pages/show_reviews', {
-              reviews: '',
+              topreviews: '',
+              reviews: ''
             })
         })
+    
 });
 
 
