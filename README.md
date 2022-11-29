@@ -1,5 +1,6 @@
-Application Description: Our application will allow you to create a user that will
-keep track of all of your reading neads. You will be able to make a profile that will keep track of previous books read
+Application Description: <br />
+Our application will allow you to create a user that will keep track of all of your reading neads. 
+You will be able to make a profile that will keep track of previous books read
 and the user's favorite author. You then will be able to find different people/matches who have simlar likes and add 
 them to your friend list. Another part of the application is the recommendation tab that will give you new books
 to read based off your profile and matches.
@@ -7,7 +8,7 @@ Another functionality of our application is showing reviews and being able to ma
 the books in the api. You will also be able to make a wishlist where you put different books that you 
 would like to read in the future. 
 
-Contributors:
+Contributors: <br />
 John Otterbein (github username JOHNOTTERBEIN), <br />
 Avery Mccauley (github username AveryMcCauley), <br />
 Mallory Prescott (github username PVMALLARD), <br />
@@ -15,7 +16,7 @@ Nathaniel Lee (github username leenate), <br />
 Lucca Quintela (github username BellaIsStinky), <br />
 Madison Crouch (github username madisoncrouch), <br />
 
-Technology Stack:
+Technology Stack: <br />
 Docker <br />
 git <br />
 shell <br />
