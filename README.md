@@ -14,7 +14,7 @@ Avery Mccauley (github username AveryMcCauley), <br />
 Mallory Prescott (github username PVMALLARD), <br />
 Nathaniel Lee (github username leenate), <br />
 Lucca Quintela (github username BellaIsStinky), <br />
-Madison Crouch (github username madisoncrouch), <br />
+Madison Crouch (github username madisoncrouch) <br />
 
 Technology Stack: <br />
 Docker <br />
