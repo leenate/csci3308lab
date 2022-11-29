@@ -4,19 +4,33 @@
 
     <div class="container">
         <h1>Reviews</h1>
-        <div class="row justify-content-center">
-        
-            <div class="col-sm-3">
-                <div class="card " style="width: 18rem; height: 19rem">
-                    <img src="../resources/img/art.jpeg" class="card-img-top" height="200px">
-                    <div class="card-body">
-                    <h5 class="card-title">R1</h5>
-                    <p class="card-text">sample review.</p>
-                    </div>
-                </div>
-            </div>
-        
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Username</th>
+                    <th>Review</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <!-- displays a portion of the database -->
+                <% if (reviews) { %>
+                <% if (reviews.length != 0) { i = 1;%>
+                <% reviews.forEach(function(item) { %>
+                <tr>
+                    <td> <%= item.reviewcontents %></td>
+                    <td> <%= item.reviewcontents %></td>
+                    <td> <%= item.reviewcontents %></td>
+                </tr>
+                <% i = i + 1;}); } } else {%>
+                    <tr>
+                        <td>No reviews have been submited</td>
+                    </tr>
+                <% } %>
+               
+            </tbody>
+        </table>
         <a href="/review" >Submit a book review</a>
     </div>
 </main>

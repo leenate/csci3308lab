@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS reviews (
   review_id INT GENERATED ALWAYS AS IDENTITY,
   reviewcontents VARCHAR(500) NOT NULL,
+  username VARCHAR(50),
+  title VARCHAR(50),
   user_id INT NOT NULL,
   CONSTRAINT fk_user_review
     FOREIGN KEY(user_id)
@@ -72,6 +74,8 @@ INSERT INTO users (username, password) VALUES ('oliver', 'oliver1');
 INSERT INTO users (username, password) VALUES ('jackson', 'jackson1');
 INSERT INTO users (username, password) VALUES ('egor', 'egor1');
 INSERT INTO users (username, password) VALUES ('david', 'david1');
+
+
 
 -- INSERT INTO books (name) VALUES ('Acid for the Children');
 -- INSERT INTO books (name) VALUES ('Once Upon a Time in Hollywood');

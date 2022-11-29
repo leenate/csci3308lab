@@ -93,7 +93,25 @@ app.get('/reviews', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    res.render('pages/show_reviews');
+        const reviews = `SELECT reviewcontents FROM reviews LIMIT 10`;
+        db.task('get-everything', task => {
+          return task.batch([
+            task.any(reviews)
+            
+          ]);
+        })
+        .then(data => {
+          res.status('200')
+          res.render('Pages/show_reviews', {
+            reviews: data[0],
+          })
+        })
+        .catch(err => {
+            console.log(err)
+            res.render('Pages/show_reviews', {
+              reviews: '',
+            })
+        })
 });
 
 
@@ -123,7 +141,6 @@ app.post('/register', async (req, res) => {
       res.redirect('/register'); 
     })
     // Redirect to GET /login route page after data has been inserted successfully.
-     
   });
 
 // POST LOGIN
@@ -157,7 +174,25 @@ app.post('/register', async (req, res) => {
        res.redirect('/register'); 
     })
   });
+  app.post('/submitreview', async (req, res) => {
+    //the logic goes here
+    const username = req.body.username;
+    const title = req.body.title;
+    const review = req.body.review;
+    
+    const q = 'INSERT INTO reviews (username,title,review) VALUES ($1,$2,$3)' ;
 
+    db.none(q,[username,title,review])
+    .then(() => {
+      res.redirect('/reviews'); 
+    })
+    .catch(function (err){  
+    // If the insert fails, redirect to GET /register route.
+      console.log(err);
+      res.redirect('/review'); 
+    })
+    // Redirect to GET /login route page after data has been inserted successfully.
+  });
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
   const find = req.body.find;
