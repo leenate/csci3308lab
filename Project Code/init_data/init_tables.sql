@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   username VARCHAR(50),
   reviewcontents VARCHAR(500) NOT NULL,
   stars INT NOT NULL,
-  user_id INT NOT NULL,
+  user_id INT,
   CONSTRAINT fk_user_review
     FOREIGN KEY(user_id)
       REFERENCES users(user_id)

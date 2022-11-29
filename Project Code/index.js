@@ -93,7 +93,7 @@ app.get('/reviews', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-        const reviews = `SELECT title, username,reviewcontents,stars FROM reviews LIMIT 10`;
+        const reviews = `SELECT title, username,reviewcontents,stars FROM reviews`;
         db.task('get-everything', task => {
           return task.batch([
             task.any(reviews)
@@ -143,7 +143,7 @@ app.post('/register', async (req, res) => {
   });
 
 // POST LOGIN
-  app.post('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     //the logic goes here
     const password  = req.body.password;
     const username = req.body.username;
@@ -173,15 +173,16 @@ app.post('/register', async (req, res) => {
        res.redirect('/register'); 
     })
   });
-  app.post('/submitreview', async (req, res) => {
+app.post('/submitreview', async (req, res) => {
     //the logic goes here
-    const username = req.body.username;
-    const title = req.body.title;
-    const review = req.body.review;
+    const t = req.body.title;
+    const un = req.session.user.username;
+    const s = req.body.star;
+    const r  = req.body.review;
     
-    const q = 'INSERT INTO reviews (username,title,review) VALUES ($1,$2,$3)' ;
+    const q = 'INSERT INTO reviews (title,username,stars,reviewcontents) VALUES ($1,$2,$3,$4)' ;
 
-    db.none(q,[username,title,review])
+    db.none(q,[t,un,s,r])
     .then(() => {
       res.redirect('/reviews'); 
     })
