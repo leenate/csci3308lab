@@ -93,15 +93,14 @@ app.get('/reviews', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-        const reviews = `SELECT reviewcontents FROM reviews LIMIT 10`;
+        const reviews = `SELECT title, username,reviewcontents,stars FROM reviews LIMIT 10`;
         db.task('get-everything', task => {
           return task.batch([
             task.any(reviews)
-            
           ]);
         })
         .then(data => {
-          res.status('200')
+          res.status(200)
           res.render('Pages/show_reviews', {
             reviews: data[0],
           })

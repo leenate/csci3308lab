@@ -9,6 +9,7 @@
                 <tr>
                     <th>Book Title</th>
                     <th>Username</th>
+                    <th>Rating</th>
                     <th>Review</th>
                 </tr>
             </thead>
@@ -19,9 +20,10 @@
                 <% if (reviews.length != 0) { i = 1;%>
                 <% reviews.forEach(function(item) { %>
                 <tr>
-                    <td> <%= item.reviewcontents %></td>
-                    <td> <%= item.reviewcontents %></td>
-                    <td> <%= item.reviewcontents %></td>
+                   <td> <%= item.title %></td>
+                   <td> <%= item.username %></td>
+                   <td> <%= item.stars %></td>
+                   <td> <%= item.reviewcontents %></td>
                 </tr>
                 <% i = i + 1;}); } } else {%>
                     <tr>
