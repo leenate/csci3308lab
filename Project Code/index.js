@@ -335,7 +335,7 @@ app.post('/submit_books', async (req, res) => {
             }
     }
     if (count == 0){
-        res.render('Pages/bookPreferences', {message: "No books were added"});
+        res.redirect('/submit_books');
         return;
     }
     query = query.substring(0,query.length - 1); // remove final comma
