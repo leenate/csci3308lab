@@ -411,8 +411,9 @@ app.get('/searchBooks', async(req, res) => {
 // GET MATCHES & FRIENDS
 
 app.get('/matches', (req, res) => {
-  const matches = 'SELECT username FROM users ORDER BY username ASC LIMIT 10;';
-  const friends = `SELECT username FROM users ORDER BY username DESC LIMIT 10`;
+  const matches = 'SELECT user_id, username FROM users ORDER BY username ASC LIMIT 10;';
+  //const friends = `SELECT username FROM users ORDER BY username DESC LIMIT 10`;
+  const friends =  "SELECT user_id, username FROM users WHERE user_id IN (SELECT user_two FROM user_to_user WHERE user_one IN (SELECT user_id FROM users WHERE username = '"+req.session.user.username+"'))"; 
   db.task('get-everything', task => {
     return task.batch([
       task.any(matches),
@@ -421,6 +422,7 @@ app.get('/matches', (req, res) => {
   })
   .then(data => {
     res.status('200')
+    console.log("Matches", data)
     res.render('Pages/matches', {
       matches: data[0],
       friends: data[1],
@@ -433,6 +435,24 @@ app.get('/matches', (req, res) => {
         friends: '',
       })
   })
+});
+
+app.post('/addfriend', async function (request, response) {
+  console.log("BODY", request.body)
+  const query = 'INSERT INTO user_to_user (user_one, user_two) VALUES ($1, $2);';
+  const userID = await db.query("SELECT user_id from users WHERE username = '"+request.session.user.username+"';")
+  console.log(userID)
+  db.any(query, [
+    userID[0].user_id,
+    parseInt(request.body.userID) 
+  ])
+    .then(function (data) {
+      console.log("SUCCESS")
+      response.redirect('/matches')
+    })
+    .catch(function (err) {
+      return console.log(err);
+    });
 });
 
 

@@ -18,6 +18,19 @@ INSERT INTO public.users(username,password) VALUES
 ('Clara','123'),
 ('Daphne','123'),
 ('Violet','123'),
+('Bella', '123'),
+('Thomas', '123'),
+('Jared','123'),
+('Octavio','123'),
+('Leon','123'),
+('Micah','123'),
+('Josh','123'),
+('Pete','123'),
+('Casey','123'),
+('Oliver','123'),
+('Jackson','123'),
+('Egor','123'),
+('David','123'),
 ('Sadie','123');
 
 INSERT INTO public.reviews(reviewcontents,user_id) VALUES
@@ -40,7 +53,20 @@ INSERT INTO public.reviews(reviewcontents,user_id) VALUES
 ('This book was bad !',17),
 ('This book was lorem!',18),
 ('This book was ipsum!',19),
-('This book was dummy text!',20);
+('This book was dummy text!',20),
+('This book was crazy!', 21),
+('This book was gnarly!', 22),
+('This book was gross!', 23),
+('This book was insane!', 24),
+('This book was off the chain bro!', 25),
+('This book was bonkers!', 26),
+('This book was knocking my socks off!', 27),
+('This book was making me brain dead!', 28),
+('This book was incredibly interesting!', 29),
+('This book was eh.', 30),
+('This book was tolerable.', 31),
+('This book was decent.', 32),
+('This book was fine and dandy', 33);
 
 INSERT INTO public.books(isbn,name) VALUES
 (1,'fakebook1'),
@@ -62,4 +88,17 @@ INSERT INTO public.books(isbn,name) VALUES
 (17,'fakebook17'),
 (18,'fakebook18'),
 (19,'fakebook19'),
-(20,'fakebook20');
+(20,'fakebook20'),
+(21,'facebook21'),
+(22,'facebook22'),
+(23,'facebook23'),
+(24,'facebook24'),
+(25,'facebook25'),
+(26,'facebook26'),
+(27,'facebook27'),
+(28,'facebook28'),
+(29,'facebook29'),
+(30,'facebook30'),
+(31,'facebook31'),
+(32,'facebook32'),
+(33,'facebook33');
