@@ -48,8 +48,23 @@
                           </form>
                         <% } else { %> -->
                           <form action="/searchBooks/add" method="POST">
-                            <input name="book_ISBN" value="<%= book.id %>" type="hidden">
+                            <% if(book.volumeInfo.industryIdentifiers) { %>
+                              <% book.volumeInfo.industryIdentifiers.every(function(bookISBN) { %>
+                                <% if(book.volumeInfo.imageLinks) { %>
+                                  <input name="book_ISBN" value="<%= bookISBN.identifier %>" type="hidden">
+                                  <% return false; %>
+                                <% } %>
+                                <% return true; %>
+                              <% }) %>
+                            <% } else { %>
+                              <input name="book_ISBN" value="0000" type="hidden">
+                            <% } %>
                             <input name="book_title" value="<%= book.volumeInfo.title %>" type="hidden">
+                            <% if(book.volumeInfo.imageLinks) { %>
+                              <input name="book_image" value="<%= book.volumeInfo.imageLinks.thumbnail %>" type="hidden">
+                            <% } else { %>
+                              <input name="book_image" value="no image" type="hidden">
+                            <% } %>
                             <button type="submit" class="btn btn-success">Add to Wishlist</button>
                           </form>
                         <!-- <% } %> -->
