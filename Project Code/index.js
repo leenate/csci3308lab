@@ -141,7 +141,6 @@ app.post('/register', async (req, res) => {
       res.redirect('/register'); 
     })
     // Redirect to GET /login route page after data has been inserted successfully.
-     
   });
 
 // POST LOGIN
@@ -175,7 +174,25 @@ app.post('/register', async (req, res) => {
        res.redirect('/register'); 
     })
   });
+  app.post('/submitreview', async (req, res) => {
+    //the logic goes here
+    const username = req.body.username;
+    const title = req.body.title;
+    const review = req.body.review;
+    
+    const q = 'INSERT INTO reviews (username,title,review) VALUES ($1,$2,$3)' ;
 
+    db.none(q,[username,title,review])
+    .then(() => {
+      res.redirect('/reviews'); 
+    })
+    .catch(function (err){  
+    // If the insert fails, redirect to GET /register route.
+      console.log(err);
+      res.redirect('/review'); 
+    })
+    // Redirect to GET /login route page after data has been inserted successfully.
+  });
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
   const find = req.body.find;
