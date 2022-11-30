@@ -1,15 +1,17 @@
 <%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
 <div class="col"><%- include ('../partials/message') %></div>
-<link rel="stylesheet" href="../../resources/css/style.css" >
+<link rel="stylesheet" href="/css/style.css" type="text/css">
 
 <main>
-  <div class="container">
-    <h2 class="title">Search Books</h2>
-    <!-- THE SEARCH FUNCTION -->
-    <form action="/searchBooks/search" method = "POST">
-        <input type="text" name="beanin" id="beanin" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-        <button type="submit" class="btn btn-outline-primary">search</button>
-    </form>
+  <div class="container-fluid">
+    <div class="page-title"> 
+      <h2 class="title">Search Books</h2>
+      <!-- THE SEARCH FUNCTION -->
+      <form action="/searchBooks/search" method = "POST">
+          <input type="text" name="beanin" id="beanin" class="form-control rounded" placeholder="Enter a title, author, etc here" aria-label="Search" aria-describedby="search-addon" />
+          <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
     <!-- BOOK SEARCH DISPLAY -->
     <div>
       <% if (results != 0) { %>
@@ -42,12 +44,22 @@
                     </td>
                     <td>
                         <!-- <button type="submit" name="add_book" class="btn btn-success" onclick=" ">Add to Wishlist</button> -->
-                        <!-- <% if(locals.action === 'delete'){ %>
-                          <form action="/searchBooks/delete" method="POST">
-                            <input name="book_id" value="<%= book.volumeInfo.id %>" type="hidden">
-                            <button type="submit" class="btn btn-failure">Remove from Wishlist</button>
+                        <% if(book.taken){ %>
+                          <form action="/searchBooks/remove" method="POST">
+                            <% if(book.volumeInfo.industryIdentifiers) { %>
+                              <% book.volumeInfo.industryIdentifiers.every(function(bookISBN) { %>
+                                <% if(book.volumeInfo.imageLinks) { %>
+                                  <input name="book_ISBN" value="<%= bookISBN.identifier %>" type="hidden">
+                                  <% return false; %>
+                                <% } %>
+                                <% return true; %>
+                              <% }) %>
+                            <% } else { %>
+                              <input name="book_ISBN" value="0000" type="hidden">
+                            <% } %>
+                            <button type="submit" class="btn btn-danger">Remove from Wishlist</button>
                           </form>
-                        <% } else { %> -->
+                        <% } else { %>
                           <form action="/searchBooks/add" method="POST">
                             <% if(book.volumeInfo.industryIdentifiers) { %>
                               <% book.volumeInfo.industryIdentifiers.every(function(bookISBN) { %>
@@ -68,7 +80,7 @@
                             <% } %>
                             <button type="submit" class="btn btn-success">Add to Wishlist</button>
                           </form>
-                        <!-- <% } %> -->
+                        <% } %>
                         <!-- testing -->
                     </td>
                   </tr>

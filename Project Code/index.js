@@ -45,6 +45,11 @@ app.use(
     })
 );
 
+
+//css implementation
+app.use(express.static('resources'));
+
+
 app.get('/', (req, res) => {
     res.redirect('/login');
 });
@@ -525,12 +530,6 @@ app.post('/searchBooks/add', async(req, res) => {
 
     const gettumQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ($1, $2);";
     const queryB = "INSERT INTO books(ISBN, name, imageloct) VALUES($1, $2, $3);";
-    // db.none(query, [
-    //     req.body.book_ISBN,
-    //     req.body.book_title
-    // ])
-    // .then(() => {console.log('added success')})
-    // .catch(err => {console.log('failed to add')})
 
     let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
     await axios({
@@ -579,6 +578,27 @@ app.post('/searchBooks/add', async(req, res) => {
         })
     }) 
 });
+app.post('/searchBooks/remove', async (req, res) => {
+    query_for_userid = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
+    user_id="";
+    await db.one(query_for_userid)
+        .then(function (data){
+            user_id = data.user_id;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    delete_query = "DELETE FROM user_to_book WHERE user_id = " + user_id + " AND book_isbn = " + req.body.book_ISBN +  ";";
+    console.log(delete_query);
+    db.none(delete_query)
+        .then(function (data){
+            res.redirect('Pages/searchBooks', {action: 'delete'});
+        })
+        .catch(err => {
+            console.log(err);
+            res.redirect('Pages/searchBooks');
+        });
+});
 
 // GET MATCHES & FRIENDS
 
@@ -606,7 +626,6 @@ app.get('/matches', (req, res) => {
       })
   })
 });
-
 
 // Authentication Required
 app.use(auth);
