@@ -1,0 +1,69 @@
+/* Colors: 
+Dark Blue - #082732
+Brown - #9F694F
+Black - #110D0C
+Muted Blue - #4B5B5F
+Silver - #A2A3A4 */
+
+/* Alt Colors: 
+Black Coffee - #2C1F1E
+Liver Chestnut - #937258
+Pale Silver - #C9C3B7
+Coffee - #754F36
+Grullo - #AA9A88 */
+
+body {
+    background-color: #2C1F1E;
+    /* font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+    /* font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.navbar-brand {
+    /* background-image: url("../img/bookshelfBlur.png"); */
+    color: #A2A3A4;
+}
+
+.container-fluid {
+    background-image: url("../img/bookBlur3.jpg");
+    background-position: center;
+    /* height: 100%; */
+    width: 100%;
+    background-size: cover;
+    padding-top: 10px;
+}
+
+.page-title {
+    background-color: rgb(162,163,164,0.8);
+    padding: 10px;
+    margin: 10px;
+    color: #2C1F1E;
+    border-radius: 5px;
+}
+
+table {
+    background-color: rgb(162,163,164,0.8);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    justify-self: center;
+}
+
+tr {
+    color: #110D0C;
+    /* background-color: #9F694F; */
+    /* opacity: 0.3; */
+}
+
+/* h1, h2 {
+    color: #754F36;
+} */
+
+.btn-primary {
+    background-color: #937258;
+    border-color: #937258;
+}
+
+a {
+    color: #937258;
+}
