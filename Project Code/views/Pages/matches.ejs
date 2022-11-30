@@ -12,10 +12,7 @@
 <%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
 
 <main>
-    <div class="center" style="padding-top:1%">
-        <button type="submit" name="find_matches" class="btn btn-success" onclick="window.location.href='later'">Find Matches</button>
-    </div>
-    <div class="center" style="padding-top:5%; padding-bottom:7%">
+    <div class="center" style="padding-top:1%; padding-bottom:7%">
     <table style="width:100%">
         <tr>
             <th>Matches</th>
@@ -31,14 +28,14 @@
             </tr>
         <% i = i + 1;}); } else { %>
             <tr>
-                <td>No Matches Found</td>
+                <td>No Matches Found: Try Adding New Book Preferences</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
             </tr>
         <%}} else {%>
             <tr>
-                <td>No Matches Found</td>
+                <td>No Matches Found: Try Adding New Book Preferences</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>

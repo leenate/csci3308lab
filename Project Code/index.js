@@ -411,10 +411,35 @@ app.get('/searchBooks', async(req, res) => {
 // GET MATCHES & FRIENDS
 
 app.get('/matches', (req, res) => {
-  const matches = 'SELECT user_id, username FROM users ORDER BY username ASC LIMIT 10;';
-  //const friends = `SELECT username FROM users ORDER BY username DESC LIMIT 10`;
-  const friends =  "SELECT user_id, username FROM users WHERE user_id IN (SELECT user_two FROM user_to_user WHERE user_one IN (SELECT user_id FROM users WHERE username = '"+req.session.user.username+"'))"; 
-  db.task('get-everything', task => {
+  const friends =  "SELECT user_id, username FROM users WHERE user_id IN (SELECT user_two FROM user_to_user WHERE user_one IN (SELECT user_id FROM users WHERE username = '"+req.session.user.username+"'))";
+  const matches = 'SELECT user_id, username FROM users WHERE username NOT IN (SELECT username FROM users WHERE user_id IN (SELECT user_two FROM user_to_user WHERE user_one IN (SELECT user_id FROM users WHERE username = $1))) ORDER BY username ASC LIMIT 10;';
+  console.log(friends)
+  db.any(friends)
+    .then(function (data) {
+      console.log(data)
+      db.any(matches,[req.session.user.username])
+      .then(function(result) {
+        res.render('Pages/matches', {
+          matches: result,
+          friends: data,
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        res.render('Pages/matches', {
+          matches: '',
+          friends: '',
+        })
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.render('Pages/matches', {
+        matches: '',
+        friends: '',
+      })
+    })
+  /*db.task('get-everything', task => {
     return task.batch([
       task.any(matches),
       task.any(friends)
@@ -434,7 +459,7 @@ app.get('/matches', (req, res) => {
         matches: '',
         friends: '',
       })
-  })
+  })*/
 });
 
 app.post('/addfriend', async function (request, response) {
