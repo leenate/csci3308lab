@@ -93,7 +93,30 @@ app.get('/reviews', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    res.render('pages/show_reviews');
+    const topreviews = `SELECT title, username,reviewcontents,stars FROM reviews ORDER BY stars DESC LIMIT 5`;
+    const reviews = `SELECT title, username,reviewcontents,stars FROM reviews`;
+
+        db.task('get-everything', task => {
+          return task.batch([
+            task.any(topreviews),
+            task.any(reviews)
+          ]);
+        })
+        .then(data => {
+          res.status(200)
+          res.render('Pages/show_reviews', {
+            topreviews: data[0],
+            reviews: data[1]
+          })
+        })
+        .catch(err => {
+            console.log(err)
+            res.render('Pages/show_reviews', {
+              topreviews: '',
+              reviews: ''
+            })
+        })
+    
 });
 
 
@@ -123,11 +146,10 @@ app.post('/register', async (req, res) => {
       res.redirect('/register'); 
     })
     // Redirect to GET /login route page after data has been inserted successfully.
-     
   });
 
 // POST LOGIN
-  app.post('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     //the logic goes here
     const password  = req.body.password;
     const username = req.body.username;
@@ -157,6 +179,28 @@ app.post('/register', async (req, res) => {
        res.redirect('/register'); 
     })
   });
+app.post('/submitreview', async (req, res) => {
+    //the logic goes here
+    const t = req.body.title;
+    const un = req.session.user.username;
+    const s = req.body.star;
+    const r  = req.body.review;
+    
+    const q = 'INSERT INTO reviews (title,username,stars,reviewcontents) VALUES ($1,$2,$3,$4)' ;
+
+    db.none(q,[t,un,s,r])
+    .then(() => {
+      res.redirect('/reviews'); 
+    })
+    .catch(function (err){  
+    // If the insert fails, redirect to GET /register route.
+      console.log(err);
+      res.redirect('/review'); 
+    })
+    // Redirect to GET /login route page after data has been inserted successfully.
+  });
+
+//------------------------------------------ wishlist --------------------------------------------------------------------------------
 
 app.get('/wishlist', (req, res) => {
     if (! req.session.user){
@@ -386,7 +430,7 @@ app.post('/submit_books', async (req, res) => {
             }
     }
     if (count == 0){
-        res.render('Pages/bookPreferences', {message: "No books were added"});
+        res.redirect('/submit_books');
         return;
     }
     query = query.substring(0,query.length - 1); // remove final comma
@@ -421,10 +465,16 @@ const auth = (req, res, next) => {
     next();
 };
 
+// SEARCH BOOKS PAGE
 app.get('/searchBooks', async(req, res) => {
     //res.render('Pages/searchBooks');
+    
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+
     const bookSearch = req.body.beanin; //'flowers'; //for testing
-    console.log("search: ", req.body);
+    //console.log("search: ", req.body);
     
     var options = {
         "async": true,
@@ -487,7 +537,7 @@ app.post('/searchBooks/search', async(req, res) => {
         }
     })
     .then(results => {
-        console.log(results.data.items[0].volumeInfo.title);
+        console.log('ISBN: ', results.data.items[0].volumeInfo.industryIdentifiers[0].identifier);
         res.render('Pages/searchBooks', {
         results: results.data.items
         })
@@ -499,6 +549,89 @@ app.post('/searchBooks/search', async(req, res) => {
         error: true
         })
     })
+});
+app.post('/searchBooks/add', async(req, res) => {
+    
+    var options = {
+        "async": true,
+        "crossDomain": true,
+        "method" : "GET",
+        "headers" : {
+          "CLIENT_TOKEN" : "my-api-key",
+          "cache-control": "no-cache"
+        }
+      };
+    
+    let user_id = "";
+    let queryA = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
+    await db.one(queryA)
+    .then(function (data){
+        user_id = data.user_id;
+        console.log('user found');
+    })
+    .catch(err => {
+        console.log(err);
+    });
+    
+    console.log('book title to add: ', req.body.book_title)
+    console.log('book ISBN: ', req.body.book_ISBN)
+    const bookSearch = req.body.beanin;
+
+    const gettumQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ($1, $2);";
+    const queryB = "INSERT INTO books(ISBN, name, imageloct) VALUES($1, $2, $3);";
+    // db.none(query, [
+    //     req.body.book_ISBN,
+    //     req.body.book_title
+    // ])
+    // .then(() => {console.log('added success')})
+    // .catch(err => {console.log('failed to add')})
+
+    let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
+    await axios({
+        url: urlformat,
+        method: 'GET',
+        dataType:'json',
+        params: {
+        //"keyword": "flowers", //change based on search bar input value
+        "size": 10,
+        }
+    })
+    .then(results => {
+        db.none(queryB, [req.body.book_ISBN, req.body.book_title, req.body.book_image])
+            .then(async data => {
+                db.oneOrNone(gettumQuery, [user_id, req.body.book_ISBN])
+                    .then(async data => {
+                        res.render('Pages/searchBooks', {
+                            results: results.data.items,
+                            Message: `Successfully added book`
+                        });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.render('Pages/searchBooks', {
+                            results: results.data.items,
+                            error: true,
+                            message: `Sorry, something went wrong`
+                        })
+                    });
+            })
+            .catch(err => {
+                console.log(err);
+                res.render('Pages/searchBooks', {
+                    results: results.data.items,
+                    error: true,
+                    message: `Sorry, something went wrong`
+                })
+            });
+    })
+    .catch(err => {
+        console.log(err);
+        res.render('Pages/searchBooks', {
+            results: [],
+            error: true,
+            message: `Sorry, something went wrong`
+        })
+    }) 
 });
 
 // GET MATCHES & FRIENDS
