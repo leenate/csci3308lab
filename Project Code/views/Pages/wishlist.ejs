@@ -10,6 +10,39 @@
     </center>
         <!--iteratively display books in users wishlist based on their info in db/info from api call-->
         <!--change to cards for better look?????-->
+        <% if (books) { %>
+            <% if (books.length == 0) { %>
+                <center>
+                    <h5><%= user %>: You have no books in your wishlist.</h5>
+                </center>
+            <% } %>
+            <% books.forEach(function(item) { %>
+                <% if (item.length == 0) { %>
+                    <center>
+                        <h5><%= user %>: You have no books in your wishlist.</h5>
+                    </center>
+                <% }  else { %>
+                    <% for (let j = 0; j < item.length; j++ ) { %>
+                        <% let image = item[j].imageloct; %>
+                        <% let isbn = item[j].book_isbn; %>
+                        <div class="card-group">
+                            <div class="card">
+                                <img src="<%= image %>" width="200" height="200">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= item[j].name %></h5>
+                                    <form id="remove-form" action="/wishlistRemove/<%= isbn %>" method="post">
+                                        <button class="btn btn-danger" type="submit">Remove Book</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    <% } %>
+                    <% }) %>
+                <% } %>
+
+
+        <!--wishlist as a table----------------------------------------------------------------->
             <% if (books) { %>
                 <% if (books.length == 0) { %>
                     <center>

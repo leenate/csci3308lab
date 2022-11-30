@@ -201,7 +201,6 @@ app.post('/submitreview', async (req, res) => {
   });
 
 //------------------------------------------ wishlist --------------------------------------------------------------------------------
-
 app.get('/wishlist', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
