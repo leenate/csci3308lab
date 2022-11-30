@@ -1,32 +1,26 @@
-Application Description: Our application will allow you to create a user that will
-keep track of all of your reading neads. You will be able to make a profile that will keep track of previous books read
-and the user's favorite author. You then will be able to find different people/matches who have simlar likes and add 
-them to your friend list. Another part of the application is the recommendation tab that will give you new books
-to read based off your profile and matches.
-Another functionality of our application is showing reviews and being able to make your own review on 
-the books in the api. You will also be able to make a wishlist where you put different books that you 
-would like to read in the future. 
+Application Description: <br />
+Finding books to read and like-minded friends to discuss books with can be difficult. Our group has created a solution: an application that lets you find friends and book recommendations based on mutual interests. The Cool Kids Book Application is the ultimate app to connect with other readers, read and write reviews, and find new book recommendations. This application utilizes the Google Books API to give users the information they want in a seamless, visually appealing way, in addition to benefits of a social networking platform. Once users register and log in, they can read and submit book reviews, match with other users who have similar interests, search for books, and add books to their liked books list. Users can also find more information on books they discover through the corresponding Google Books link via the search feature. Another useful feature is the ability to create a wishlist of books that the user would like to read in the future. Users can log out and have their reviews, wishlist, liked books, and other information retained. The Cool Kids Book Application lets you keep track of all of your reading needs while connecting you with others!
 
-Contributors:
-John Otterbein, github username JOHNOTTERBEIN
-Avery Mccauley, github username AveryMcCauley
-Mallory Prescott, github username PVMALLARD
-Nathaniel Lee, github username leenate
-Lucca Quintela, github username BellaIsStinky
-Madison Crouch, github username madisoncrouch
+Contributors: <br />
+John Otterbein (github username JOHNOTTERBEIN), <br />
+Avery Mccauley (github username AveryMcCauley), <br />
+Mallory Prescott (github username PVMALLARD), <br />
+Nathaniel Lee (github username leenate), <br />
+Lucca Quintela (github username BellaIsStinky), <br />
+Madison Crouch (github username madisoncrouch) <br />
 
-Technology Stack:
-Docker
-git
-shell
-google
-vs code
+Technology Stack: <br />
+Docker <br />
+git <br />
+shell <br />
+Google Chrome Browser <br />
+Visual Studio Code IDE <br />
 
-Prerequisites:
-You will need to download docker and a shell that you prefer to run programs on. Then once you get the program running you will need a internet browser to show the program
+Prerequisites: <br />
+You will need to download Docker and a shell that you prefer to run programs on. Then once you get the program running you will need a internet browser to show the program.
 
-Instructions:
+Instructions: <br />
 The first step is downloading the program. Then you want to open up your shell and move into the directory where the program is located. Then you should move into the project code and then you can run the docker compose up to get the docker running. Then from here all you have to do is type localhost:3000 in your browser of choice and the website should be running.
 
-Link to deployed application:
-NA
+Link to deployed application: <br />
+N/A

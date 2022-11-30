@@ -45,6 +45,11 @@ app.use(
     })
 );
 
+
+//css implementation
+app.use(express.static('resources'));
+
+
 app.get('/', (req, res) => {
     res.redirect('/login');
 });
@@ -59,7 +64,7 @@ app.get('/bookPreferences', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    res.render('Pages/bookPreferences');
+    res.redirect('/submit_books');
 });
 app.get('/logout', (req, res) => {
     req.session.destroy();
@@ -93,7 +98,30 @@ app.get('/reviews', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    res.render('pages/show_reviews');
+    const topreviews = `SELECT title, username,reviewcontents,stars FROM reviews ORDER BY stars DESC LIMIT 5`;
+    const reviews = `SELECT title, username,reviewcontents,stars FROM reviews`;
+
+        db.task('get-everything', task => {
+          return task.batch([
+            task.any(topreviews),
+            task.any(reviews)
+          ]);
+        })
+        .then(data => {
+          res.status(200)
+          res.render('Pages/show_reviews', {
+            topreviews: data[0],
+            reviews: data[1]
+          })
+        })
+        .catch(err => {
+            console.log(err)
+            res.render('Pages/show_reviews', {
+              topreviews: '',
+              reviews: ''
+            })
+        })
+    
 });
 
 
@@ -123,11 +151,10 @@ app.post('/register', async (req, res) => {
       res.redirect('/register'); 
     })
     // Redirect to GET /login route page after data has been inserted successfully.
-     
   });
 
 // POST LOGIN
-  app.post('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     //the logic goes here
     const password  = req.body.password;
     const username = req.body.username;
@@ -157,7 +184,26 @@ app.post('/register', async (req, res) => {
        res.redirect('/register'); 
     })
   });
+app.post('/submitreview', async (req, res) => {
+    //the logic goes here
+    const t = req.body.title;
+    const un = req.session.user.username;
+    const s = req.body.star;
+    const r  = req.body.review;
+    
+    const q = 'INSERT INTO reviews (title,username,stars,reviewcontents) VALUES ($1,$2,$3,$4)' ;
 
+    db.none(q,[t,un,s,r])
+    .then(() => {
+      res.redirect('/reviews'); 
+    })
+    .catch(function (err){  
+    // If the insert fails, redirect to GET /register route.
+      console.log(err);
+      res.redirect('/review'); 
+    })
+    // Redirect to GET /login route page after data has been inserted successfully.
+  });
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
   const find = req.body.find;
@@ -229,16 +275,53 @@ app.post('/recommendation', (req, res) => {
 // app.get('/recommendation', (req, res) => {
 //     res.render('Pages/recommendation');
 // });
-app.post('/submit_books', (req, res) => {
-    //ACTUALLY SUBMIT BOOKS HERE
-    res.render('Pages/login');
+app.get('/submit_books', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+    query = "SELECT books.name,books.imageloct,books.isbn FROM books JOIN user_to_book ON books.isbn = user_to_book.book_isbn JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
+    db.any(query)
+        .then(async results => {
+            res.render('Pages/bookPreferences',{
+                "results": results
+              });
+        })
+        .catch(err => {
+            console.log(err);
+            res.render('Pages/bookPreferences',{
+                "results": results
+              });
+        });
 });
-//TODO: add input to user_to_book table based on session var
-//TODO: add error checking
+
+app.post('/removeFromPreferences/:isbn', async (req, res) => {
+    query_for_userid = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
+    user_id="";
+    await db.one(query_for_userid)
+        .then(function (data){
+            user_id=data.user_id;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    delete_query = "DELETE FROM user_to_book WHERE user_id = " + user_id + " AND book_isbn = " + req.params.isbn +  ";";
+    console.log(delete_query);
+    db.none(delete_query)
+        .then(function (data){
+            res.redirect('/submit_books');
+        })
+        .catch(err => {
+            console.log(err);
+            res.redirect('/submit_books');
+        });
+});
 app.post('/submit_books', async (req, res) => {
-    // Split csv values into array
-    const bookPrefs = req.body.ISBN;
-    let isbnArr = bookPrefs.split(',');
+    let ISBN1 = req.body.ISBN1;
+    let ISBN2 = req.body.ISBN2;
+    let ISBN3 = req.body.ISBN3;
+    let ISBN4 = req.body.ISBN4;
+    let ISBN5 = req.body.ISBN5;
+    let isbnArr = [ISBN1, ISBN2, ISBN3, ISBN4, ISBN5];
 
     var options = {
         "async": true,
@@ -253,11 +336,8 @@ app.post('/submit_books', async (req, res) => {
     // Build query by adding on the values to the base query. No error checking as of now
     let user_id = "";
     query2 = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
-    console.log(query2);
     await db.one(query2)
         .then(function (data){
-            console.log(data);
-            console.log("data")
             user_id=data.user_id;
         })
         .catch(err => {
@@ -265,67 +345,66 @@ app.post('/submit_books', async (req, res) => {
         });
     
     let associationQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ";
-    let query = "INSERT INTO books(ISBN,name) VALUES "
+    let query = "INSERT INTO books(ISBN,name,imageloct) VALUES ";
+    let count = 0;
     for (let i = 0; i < isbnArr.length; i++) { 
+        if (isbnArr[i] == "") {
+            continue;
+        }
+        console.log(isbnArr[i]);
         let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + isbnArr[i];
         let book = "";
+        let imageloct = "";
         await axios({
                url: urlformat,
                method: 'GET',
                dataType:'json',
             })
             .then(results => {
-              results.data.items[0].volumeInfo.title;
-              console.log(results.data.items[0].volumeInfo.title);
-              book = results.data.items[0].volumeInfo.title;
+                console.log(results.data.items[0].volumeInfo.imageLinks.smallThumbnail);
+                results.data.items[0].volumeInfo.title;
+                book = results.data.items[0].volumeInfo.title;
+                imageloct = results.data.items[0].volumeInfo.imageLinks.smallThumbnail;
             })
             .catch(error => {
                console.log(error);
             })
 
-        //if (results.totalItems) {
-            // There'll be only 1 book per ISBN
-            //let book = results.items[0];
-
-            //let title = book['volumeInfo']['title'];
-            //let subtitle = book['volumeInfo']['subtitle'];
-            //let authors = book['volumeInfo']['authors'];
-            //let printType = book['volumeInfo']['printType'];
-            //let pageCount = book['volumeInfo']['pageCount'];
-            //let publisher = book['volumeInfo']['publisher'];
-            //let publishedDate = book['volumeInfo']['publishedDate'];
-            //let webReaderLink = book['accessInfo']['webReaderLink'];
-
-            // For debugging
-            //Logger.log(book);
-            console.log("book")
-            console.log(book);
+            if (book == undefined || book == "" || isbnArr[i] == undefined || isbnArr[i] == "") { 
+                continue
+            }
             //let title = book['volumeInfo']['title'];
             if(book){
-                query += "(" + isbnArr[i] + ",'" + book  + "'),";
+                query += "(" + isbnArr[i] + ",'" + book  + "','" +  imageloct + "'),";
                 associationQuery += "(" + user_id + "," + isbnArr[i] + "),";
+                count++;
             }
+    }
+    if (count == 0){
+        res.redirect('/submit_books');
+        return;
     }
     query = query.substring(0,query.length - 1); // remove final comma
     associationQuery = associationQuery.substring(0,associationQuery.length - 1); // remove final comma
-    query += " RETURNING *;"
-    associationQuery += " RETURNING *;"
-    console.log(req.session.user.username)
+    query += " ON CONFLICT DO NOTHING;"
+    associationQuery += " ON CONFLICT DO NOTHING;"
+    console.log(query);
+    console.log(associationQuery);
 
-    db.one(query)
+    db.oneOrNone(query)
         .then(async data => {
-            db.one(associationQuery)
+            db.oneOrNone(associationQuery)
                 .then(async data => {
-                    res.render('Pages/wishlist');
+                    res.redirect('/wishlist');
                 })
                 .catch(err => {
                     console.log(err);
-                    res.render('Pages/wishlist');
+                    res.redirect('/wishlist');
                 });
         })
         .catch(err => {
             console.log(err);
-            res.render('Pages/wishlist');
+            res.redirect('/wishlist');
         });
 });
 // Authentication Middleware.
@@ -337,9 +416,17 @@ const auth = (req, res, next) => {
     next();
 };
 
+// SEARCH BOOKS PAGE
 app.get('/searchBooks', async(req, res) => {
     //res.render('Pages/searchBooks');
+    
+    if (! req.session.user){
+        res.redirect('/login');
+    }
 
+    const bookSearch = req.body.beanin; //'flowers'; //for testing
+    //console.log("search: ", req.body);
+    
     var options = {
         "async": true,
         "crossDomain": true,
@@ -350,62 +437,167 @@ app.get('/searchBooks', async(req, res) => {
         }
       };
 
-    // Build query by adding on the values to the base query. No error checking as of now
-    //var query = "SELECT * FROM books WHERE"
-    //for (let i = 0; i < isbnArr.length; i++) { 
-        let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + 'flowers';
-        let book = "";
-        await axios({
-               url: urlformat,
-               method: 'GET',
-               dataType:'json',
-               params: {
-                //"keyword": "flowers", //change based on search bar input value
-                "size": 10,
-                }
+    let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
+    await axios({
+            url: urlformat,
+            method: 'GET',
+            dataType:'json',
+            params: {
+            //"keyword": "flowers", //change based on search bar input value
+            "size": 10,
+            }
+        })
+        .then(results => {
+            console.log(results.data.items[0].volumeInfo.title);
+            res.render('Pages/searchBooks', {
+            results: results.data.items
             })
-            .then(results => {
-              console.log(results.data.items[0].volumeInfo.title);
-              res.render('Pages/searchBooks', {
-                results: results.data.items //.title;
-              })
+        })
+        .catch(error => {
+            console.log(error);
+            res.render('Pages/searchBooks',{
+            results: [],
+            error: true
             })
-            .catch(error => {
-               console.log(error);
-               res.render('Pages/searchBooks',{
-                results: [],
-                error: true
-              })
+        })
+
+});
+app.post('/searchBooks/search', async(req, res) => {
+    //res.render('Pages/searchBooks');
+    const bookSearch = req.body.beanin; //'flowers'; //for testing
+    console.log("search: ", req.body);
+    
+    var options = {
+        "async": true,
+        "crossDomain": true,
+        "method" : "GET",
+        "headers" : {
+          "CLIENT_TOKEN" : "my-api-key",
+          "cache-control": "no-cache"
+        }
+      };
+
+    let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
+    await axios({
+        url: urlformat,
+        method: 'GET',
+        dataType:'json',
+        params: {
+        //"keyword": "flowers", //change based on search bar input value
+        "size": 10,
+        }
+    })
+    .then(results => {
+        console.log('ISBN: ', results.data.items[0].volumeInfo.industryIdentifiers[0].identifier);
+        res.render('Pages/searchBooks', {
+        results: results.data.items
+        })
+    })
+    .catch(error => {
+        console.log(error);
+        res.render('Pages/searchBooks',{
+        results: [],
+        error: true
+        })
+    })
+});
+app.post('/searchBooks/add', async(req, res) => {
+    
+    var options = {
+        "async": true,
+        "crossDomain": true,
+        "method" : "GET",
+        "headers" : {
+          "CLIENT_TOKEN" : "my-api-key",
+          "cache-control": "no-cache"
+        }
+      };
+    
+    let user_id = "";
+    let queryA = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
+    await db.one(queryA)
+    .then(function (data){
+        user_id = data.user_id;
+        console.log('user found');
+    })
+    .catch(err => {
+        console.log(err);
+    });
+    
+    console.log('book title to add: ', req.body.book_title)
+    console.log('book ISBN: ', req.body.book_ISBN)
+    const bookSearch = req.body.beanin;
+
+    const gettumQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ($1, $2);";
+    const queryB = "INSERT INTO books(ISBN, name, imageloct) VALUES($1, $2, $3);";
+
+    let urlformat = 'https://www.googleapis.com/books/v1/volumes?q=' + bookSearch;
+    await axios({
+        url: urlformat,
+        method: 'GET',
+        dataType:'json',
+        params: {
+        //"keyword": "flowers", //change based on search bar input value
+        "size": 10,
+        }
+    })
+    .then(results => {
+        db.none(queryB, [req.body.book_ISBN, req.body.book_title, req.body.book_image])
+            .then(async data => {
+                db.oneOrNone(gettumQuery, [user_id, req.body.book_ISBN])
+                    .then(async data => {
+                        res.render('Pages/searchBooks', {
+                            results: results.data.items,
+                            Message: `Successfully added book`
+                        });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.render('Pages/searchBooks', {
+                            results: results.data.items,
+                            error: true,
+                            message: `Sorry, something went wrong`
+                        })
+                    });
             })
-
-            // For debugging
-            console.log("book")
-            console.log(book);
-            
-            // if(book){
-            // query += "(" + isbnArr[i] + ",'" + book  + "'),";
-            // }
-    //}
-    //query = query.substring(0,query.length - 1); // remove final comma
-    //query += " RETURNING *;"
-
-    // db.one(query)
-    //     .then(async data => {
-    //         res.render('Pages/searchBooks');
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //         res.render('Pages/searchBooks');
-    //     });
-    // });
-    // // Authentication Middleware.
-    // const auth = (req, res, next) => {
-    //     if (!req.session.user) {
-    //       // Default to register page.
-    //       return res.redirect('/register');
-    //     }
-    //     next();
-
+            .catch(err => {
+                console.log(err);
+                res.render('Pages/searchBooks', {
+                    results: results.data.items,
+                    error: true,
+                    message: `Sorry, something went wrong`
+                })
+            });
+    })
+    .catch(err => {
+        console.log(err);
+        res.render('Pages/searchBooks', {
+            results: [],
+            error: true,
+            message: `Sorry, something went wrong`
+        })
+    }) 
+});
+app.post('/searchBooks/remove', async (req, res) => {
+    query_for_userid = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';"
+    user_id="";
+    await db.one(query_for_userid)
+        .then(function (data){
+            user_id = data.user_id;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    delete_query = "DELETE FROM user_to_book WHERE user_id = " + user_id + " AND book_isbn = " + req.body.book_ISBN +  ";";
+    console.log(delete_query);
+    db.none(delete_query)
+        .then(function (data){
+            res.redirect('Pages/searchBooks', {action: 'delete'});
+        })
+        .catch(err => {
+            console.log(err);
+            res.redirect('Pages/searchBooks');
+        });
 });
 
 // GET MATCHES & FRIENDS
@@ -479,7 +671,6 @@ app.post('/addfriend', async function (request, response) {
       return console.log(err);
     });
 });
-
 
 // Authentication Required
 app.use(auth);

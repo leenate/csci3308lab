@@ -1,69 +1,94 @@
 <%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
+<div class="col"><%- include ('../partials/message') %></div>
+<link rel="stylesheet" href="/css/style.css" type="text/css">
 
 <main>
-  <div class="container">
-    <h2 class="title">Search Books</h2>
-    <!-- THE SEARCH FUNCTION -->
-    <div class="input-group">
-        <div class="form-outline">
-          <input type="search" id="form1" class="form-control" />
-        </div>
-        <button type="button" class="btn btn-primary">
-          <i class="fas fa-search">Search</i>
-        </button>
+  <div class="container-fluid">
+    <div class="page-title"> 
+      <h2 class="title">Search Books</h2>
+      <!-- THE SEARCH FUNCTION -->
+      <form action="/searchBooks/search" method = "POST">
+          <input type="text" name="beanin" id="beanin" class="form-control rounded" placeholder="Enter a title, author, etc here" aria-label="Search" aria-describedby="search-addon" />
+          <button type="submit" class="btn btn-primary">Search</button>
+      </form>
     </div>
     <!-- BOOK SEARCH DISPLAY -->
     <div>
+      <% if (results != 0) { %>
         <table class="table">
             <thead>
                 <tr>
-                    <th><!--book image--></th>
+                    <th>Cover</th>
                     <th>Book Title</th>
+                    <th>Author(s)</th>
                     <th>Book Description</th>
-                    <th>Book Price/Availability</th>
-                    <th><!--button to purchase/rent/download book--></th>
-                    <th><!--button to add book to wishlist--></th>
+                    <th>More Info</th>
+                    <th>Add to Wishlist</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- displays a portion of the database -->
                 <% results.forEach(function(book) { %>
                   <tr>
-                    <!-- <td><%= book.img %></td> -->
-                    <td><%= book.title %></td>
-                    <td><%= book.author %></td>
-                    <!-- <td><%= book.description %></td> -->
-                    <!-- <td><%= book.link %></td> -->
                     <td>
-                        <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='something'">Select Book</button>
-                    </td>
-                    <td>
-                        <button type="submit" name="remove_book" class="btn btn-danger" onclick=" ">Remove Book</button>
-                    </td>
-                    <!-- <td>
-                      <% if(locals.action === 'delete'){ %>
-                        <form action="/courses/delete" method="POST">
-                          <input name="course_id" value="<%= course.course_id %>" type="hidden">
-                          <button type="submit" class="btn btn-primary">Delete</button>
-                        </form>
+                      <% if(book.volumeInfo.imageLinks) { %>
+                        <img src="<%= book.volumeInfo.imageLinks.thumbnail %>">
                       <% } else { %>
-                        <% if(book.addedtolist) { %>
-                          <form action="/courses/add" method="POST">
-                            <input name="course_id" value="<%= course.course_id %>" type="hidden">
-                            <button type="submit" class="btn btn-primary" disabled>Add</button>
+                        <p>no image</p>
+                      <% } %>
+                    <td><%= book.volumeInfo.title %></td>
+                    <td><%= book.volumeInfo.authors %></td>
+                    <td><%= book.volumeInfo.description %></td>
+                    <td>
+                        <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='<%= book.volumeInfo.infoLink %>'">More Info</button>
+                    </td>
+                    <td>
+                        <!-- <button type="submit" name="add_book" class="btn btn-success" onclick=" ">Add to Wishlist</button> -->
+                        <% if(book.taken){ %>
+                          <form action="/searchBooks/remove" method="POST">
+                            <% if(book.volumeInfo.industryIdentifiers) { %>
+                              <% book.volumeInfo.industryIdentifiers.every(function(bookISBN) { %>
+                                <% if(book.volumeInfo.imageLinks) { %>
+                                  <input name="book_ISBN" value="<%= bookISBN.identifier %>" type="hidden">
+                                  <% return false; %>
+                                <% } %>
+                                <% return true; %>
+                              <% }) %>
+                            <% } else { %>
+                              <input name="book_ISBN" value="0000" type="hidden">
+                            <% } %>
+                            <button type="submit" class="btn btn-danger">Remove from Wishlist</button>
                           </form>
                         <% } else { %>
-                          <form action="/courses/add" method="POST">
-                            <input name="course_id" value="<%= course.course_id %>" type="hidden">
-                            <button type="submit" class="btn btn-primary">Add</button>
+                          <form action="/searchBooks/add" method="POST">
+                            <% if(book.volumeInfo.industryIdentifiers) { %>
+                              <% book.volumeInfo.industryIdentifiers.every(function(bookISBN) { %>
+                                <% if(book.volumeInfo.imageLinks) { %>
+                                  <input name="book_ISBN" value="<%= bookISBN.identifier %>" type="hidden">
+                                  <% return false; %>
+                                <% } %>
+                                <% return true; %>
+                              <% }) %>
+                            <% } else { %>
+                              <input name="book_ISBN" value="0000" type="hidden">
+                            <% } %>
+                            <input name="book_title" value="<%= book.volumeInfo.title %>" type="hidden">
+                            <% if(book.volumeInfo.imageLinks) { %>
+                              <input name="book_image" value="<%= book.volumeInfo.imageLinks.thumbnail %>" type="hidden">
+                            <% } else { %>
+                              <input name="book_image" value="no image" type="hidden">
+                            <% } %>
+                            <button type="submit" class="btn btn-success">Add to Wishlist</button>
                           </form>
                         <% } %>
-                      <% } %>
-                    </td> -->
+                        <!-- testing -->
+                    </td>
                   </tr>
                 <% }) %>
             </tbody>
         </table>
+        <% } %>
+        <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/wishlist">here</a> to view your wishlist!</small>
     </div>
   </div>
 </main>
