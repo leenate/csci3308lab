@@ -146,8 +146,7 @@ app.post('/register', async (req, res) => {
             api_key: process.env.API_KEY,
         };
         req.session.save();
-        // CHANGE THIS BACK TO /submit_books
-        res.redirect('/wishlist');   //redirect to /discover route after setting the session.
+        res.redirect('/submit_books');   //redirect to /discover route after setting the session.
       }
       else{   // If pwd does not match
         res.render('pages/login', {message: `Incorrect username or password.`},)
@@ -158,25 +157,6 @@ app.post('/register', async (req, res) => {
        res.redirect('/register'); 
     })
   });
-
-app.get('/users', (req, res) => {
-    //const user = 'SELECT books.name FROM books INNER JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN INNER JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = "Sadie";';
-    //const user = "SELECT DISTINCT books.name, books.ISBN FROM books JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = daisy;";
-    const user = "SELECT * FROM books;";
-    db.task('get-everything', task => {
-        return task.batch([
-            task.any(user)
-        ]);
-    })
-    .then(rows => {
-        res.send(rows);
-    })
-    .catch(err => {
-        console.log(err);
-    });
-});
-
-//simpler wishlist w/o axios
 
 app.get('/wishlist', (req, res) => {
     if (! req.session.user){
@@ -207,84 +187,27 @@ app.get('/wishlist', (req, res) => {
     });
 });
 
-app.post('/wishlist', (req, res) => {
-    db.task('delete-book', task => {
-        return task.batch([
-            task.none(
-                `DELETE FROM 
-                user_to_book
-                WHERE
-                book_ISBN = $1
-                AND user_id = (SELECT user_id FROM users WHERE username = $2);`,
-                [parseInt(req.body.book_ISBN), req.session.user.username,]
-            ),
-            task.any(user_to_book, [req.session.user.user_id]),
-        ]);
-    })
-    .then(([, results]) => {
-        console.log(results.data);
-        res.render('pages/wishlist', {
-            results: results.data,
-            message: `Successfully removed ${req.body.name} from wishlist`,
-            action: 'delete',
+app.post('/wishlistRemove/:isbn', async(req, res) => {
+    user_id = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';";
+    cur_user_id = '';
+    await db.one(user_id)
+        .then(function(data) {
+            cur_user_id = data.user_id;
+        })
+        .catch(err => {
+            console.log(err);
         });
-    })
-    .catch(err => {
-        res.render('pages/wishlist', {
-            results: [],
-            error: true,
-            message: err.message,
+    remove_book = "DELETE FROM user_to_book WHERE user_id = " + cur_user_id + " AND book_isbn = " + req.params.isbn + ";";
+    console.log(remove_book);
+    db.none(remove_book)
+        .then(function (data) {
+            res.redirect('/wishlist');
+        })
+        .catch(err => {
+            console.log(err);
+            res.send(`Unable to remove book ${req.params.isbn}`);
         });
-    });
 });
-
-//TO-DO: finish get/wishlist with axios
-
-//app.get('/wishlist', async (req, res) => {
-    //if (! req.session.user){
-        //res.redirect('/login');
-    //}
-    //let isbn = [];
-    //const query = `SELECT book_ISBN FROM user_to_book WHERE user_id = '` + req.session.user.user_id + `';`;
-    //console.log(query);
-    //await db.one(query)
-        //.then(data => {
-            //console.log(data);
-            //console.log("data")
-            //isbn = data;
-    //})
-    //isbn.forEach(async function(i) {
-        //let url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' + i;
-        //await axios({
-            //url: url,
-            //method: 'GET',
-            //dataType: 'json',
-            //params: {
-                //"apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo'
-            //}
-        //})
-        //.then(results => {
-            //console.log(results);
-            //i = results;
-        //})
-        //.catch(err => {
-            //console.log(err);
-        //})
-    //})
-//db.one(isbn)
-    //.then(function(results) {
-        //res.status('200');
-        //res.render('pages/wishlist', {
-            //books: results,
-        //})
-    //})
-    //.catch(err => {
-        //console.log(err)
-        //res.render('pages/wishlist', {
-        //books: [],
-        //});
-    //});
-//});
 
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
