@@ -173,7 +173,8 @@ app.post('/login', async (req, res) => {
             api_key: process.env.API_KEY,
         };
         req.session.save();
-        res.redirect('/submit_books');   //redirect to /discover route after setting the session.
+        res.redirect('/wishlist');
+        //res.redirect('/submit_books');   //redirect to /discover route after setting the session.
       }
       else{   // If pwd does not match
         res.render('pages/login', {message: `Incorrect username or password.`},)

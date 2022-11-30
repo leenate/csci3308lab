@@ -1,12 +1,21 @@
 <%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
+<div class="col"><%- include ('../partials/message') %></div>
+<link rel="stylesheet" href="/css/style.css" type="text/css">
 
 <main>
+    <div class="container-fluid">
     <!--title of the wishlist page will be <username>'s wishlist-->
+    <div class="page-title">
+        <style>
+            .page-title{
+                color: white;
+            }
+        </style>
     <center>
         <h2 class="title"><%= user %>'s Wishlist:</h2>
     </center>
     <center>
-        <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
+        <small id="searchBooksHelp" >Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
     </center>
         <!--iteratively display books in users wishlist based on their info in db/info from api call-->
         <!--change to cards for better look?????-->
@@ -21,18 +30,66 @@
                     <center>
                         <h5><%= user %>: You have no books in your wishlist.</h5>
                     </center>
+                </div>
                 <% }  else { %>
-                    <% for (let j = 0; j < item.length; j++ ) { %>
+                    <% for (let j = 0; j < item.length; j += 3 ) { %>
                         <% let image = item[j].imageloct; %>
                         <% let isbn = item[j].book_isbn; %>
-                        <div class="card-group">
-                            <div class="card">
-                                <img src="<%= image %>" width="200" height="200">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= item[j].name %></h5>
-                                    <form id="remove-form" action="/wishlistRemove/<%= isbn %>" method="post">
-                                        <button class="btn btn-danger" type="submit">Remove Book</button>
-                                    </form>
+                        <style>
+                            body{
+                                color: white;
+                            }
+                
+                            div.card{
+                                background-color: #432f2e;
+                                margin-right: auto;
+                                margin-left: auto;
+                            }
+                
+                            div.card-group{
+                                width: 1000px;
+                                margin-right: auto;
+                                left: auto;
+                            }
+                        </style>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <div class="card">
+                                    <img src="<%= item[j].imageloct %>" width="200" height="200">
+                                    <div class="card-body">
+                                        <center>
+                                            <h5 class="card-title"><%= item[j].name %></h5>
+                                            <form id="remove-form" action="/wishlistRemove/<%= item[j].book_isbn %>" method="post">
+                                                <button class="btn btn-danger" type="submit">Remove Book</button>
+                                            </form>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col d-flex justify-content-center">
+                                <div class="card">
+                                    <img src="<%= item[j + 1].imageloct %>" width="200" height="200">
+                                    <div class="card-body">
+                                        <center>
+                                            <h5 class="card-title"><%= item[j + 1].name %></h5>
+                                            <form id="remove-form" action="/wishlistRemove/<%= item[j + 1].book_isbn %>" method="post">
+                                                <button class="btn btn-danger" type="submit">Remove Book</button>
+                                            </form>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col d-flex justify-content-center">
+                                <div class="card">
+                                    <img src="<%= item[j + 2].imageloct %>" width="200" height="200">
+                                    <div class="card-body">
+                                        <center>
+                                            <h5 class="card-title"><%= item[j + 2].name %></h5>
+                                            <form id="remove-form" action="/wishlistRemove/<%= item[j + 2].book_isbn %>" method="post">
+                                                <button class="btn btn-danger" type="submit">Remove Book</button>
+                                            </form>
+                                        </center>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -40,48 +97,7 @@
                     <% } %>
                     <% }) %>
                 <% } %>
-
-
-        <!--wishlist as a table----------------------------------------------------------------->
-            <% if (books) { %>
-                <% if (books.length == 0) { %>
-                    <center>
-                        <h5><%= user %>: You have no books in your wishlist.</h5>
-                    </center>
-                <% } %>
-                <% books.forEach(function(item) { %>
-                    <% if (item.length == 0) { %>
-                        <center>
-                            <h5><%= user %>: You have no books in your wishlist.</h5>
-                        </center>
-                    <% }  else { %>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Book Title</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    <% for (let j = 0; j < item.length; j++ ) { %>
-                        <% let image = item[j].imageloct; %>
-                        <% let isbn = item[j].book_isbn; %>
-                    <tr>
-                        <td><img src="<%= item[j].imageloct %>" width="200" height="200"></td>
-                        <td><%= item[j].name %></td>
-                        <td>
-                            <form id="remove-form" action="/wishlistRemove/<%= isbn %>" method="post">
-                                <button class="btn btn-danger" type="submit">Remove Book</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <% } %>
-                    <% } %>
-                    <% }) %>
-                <% } %>
-        </tbody>
-    </table>
+    </div>
 </main>
 
 <%- include ('../Partials/footer') %>
