@@ -5,14 +5,6 @@
     <h2 class="title">Recommendations</h2>
     <table class="table">
         <thead>
-            <div class="input-group">
-                <div class="form-outline">
-                  <input type="search" placeholder="Find Recommendation" id="find" class="form-control" />
-                </div>
-                <button type="button" class="btn btn-primary">
-                  <i class="fas fa-search">Find</i>
-                </button>
-            </div>
             <tr>
                 <th><!--book image--></th>
                 <th>Book Title</th>
@@ -26,7 +18,7 @@
             <!--iteratively display books in users recommendation list based on their info in db/info from api call-->
             <%
             if(results) {
-                for (let j = 0; j < 10; j++){
+                for (let j = 0; j < 5; j++){
                     var title = results.items[j].volumeInfo.title;
                     var data = Object.values(results.items[j].volumeInfo.infoLink);
                     var image = results.items[j].volumeInfo.imageLinks;
