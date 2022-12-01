@@ -279,7 +279,7 @@ app.get('/submit_books', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    query = "SELECT books.name,books.imageloct,books.isbn FROM books JOIN user_to_book ON books.isbn = user_to_book.book_isbn JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
+    query = "SELECT books.name,books.imageloct,books.isbn FROM books JOIN liked_books ON books.isbn = liked_books.book_isbn JOIN users ON liked_books.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
     db.any(query)
         .then(async results => {
             res.render('Pages/bookPreferences',{
@@ -289,7 +289,7 @@ app.get('/submit_books', (req, res) => {
         .catch(err => {
             console.log(err);
             res.render('Pages/bookPreferences',{
-                "results": results
+                "results": []
               });
         });
 });
@@ -304,7 +304,7 @@ app.post('/removeFromPreferences/:isbn', async (req, res) => {
         .catch(err => {
             console.log(err);
         });
-    delete_query = "DELETE FROM user_to_book WHERE user_id = " + user_id + " AND book_isbn = " + req.params.isbn +  ";";
+    delete_query = "DELETE FROM liked_books WHERE user_id = " + user_id + " AND book_isbn = " + req.params.isbn +  ";";
     console.log(delete_query);
     db.none(delete_query)
         .then(function (data){
@@ -344,7 +344,7 @@ app.post('/submit_books', async (req, res) => {
             console.log(err);
         });
     
-    let associationQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ";
+    let associationQuery = "INSERT INTO liked_books (user_id, book_isbn) VALUES ";
     let query = "INSERT INTO books(ISBN,name,imageloct) VALUES ";
     let count = 0;
     for (let i = 0; i < isbnArr.length; i++) { 
