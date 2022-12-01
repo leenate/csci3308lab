@@ -1,8 +1,12 @@
 <%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
+<link rel="stylesheet" href="/css/style.css" type="text/css">
 
 <main>
     <!--title of the recommendatiosn page will be <username>'s recommendations-->
+    <div class="container-fluid">
+    <div class="page-title">
     <h2 class="title">Recommendations</h2>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -35,11 +39,6 @@
                     <td>
                         <button type="submit" name="select_book" class="btn btn-success" onclick="window.location.href='<%= link %>'">Select Book</button>
                     </td>
-                    <td>
-                        <form action="/wishlist" method="post">
-                            <button type="submit" name="remove_book" class="btn btn-danger">Remove Book</button>
-                        </form>
-                    </td>
                 </tr>
                 <%
             }
@@ -49,6 +48,7 @@
         </tbody>
     </table>
     <small id="searchBooksHelp" class="form-text text-muted">Click <a href="/searchBooks">here</a> to add more books to your wishlist!</small>
+  </div>
 </main>
 
 <%- include ('../Partials/footer') %>
