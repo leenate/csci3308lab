@@ -1,10 +1,14 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
-<link rel="stylesheet" href="/css/styles.css" type="text/css">
+<link rel="stylesheet" href="/css/style.css" type="text/css">
 
 <main>
+    <div class="container-fluid">
     <div class="container">
-        <h1>Top Five Reviews</h1>
+        <div class="page-title">
+            <h1>Top Five Reviews</h1>
+        </div>
+       
         <table class="table">
             <thead>
                 <tr>
@@ -38,7 +42,10 @@
     </div>
 
     <div class="container">
+        <div class="page-title">
         <h1>All Reviews</h1>
+        </div>
+        
         <table class="table">
             <thead>
                 <tr>
@@ -69,6 +76,7 @@
             </tbody>
         </table>
     </div>
+    </div>  
 </main>
 
 <%- include ('../partials/footer') %>
