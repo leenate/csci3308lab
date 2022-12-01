@@ -259,7 +259,10 @@ app.post('/wishlistRemove/:isbn', async(req, res) => {
 
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
-  const find = req.body.find;
+  // if (! req.session.user){
+  //   res.redirect('/login');
+  // }   
+  
   var options = {
     "async": true,
     "crossDomain": true,
@@ -269,7 +272,16 @@ app.get('/recommendation', (req, res) => {
       "cache-control": "no-cache"
     }
   };
-  var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:'+ find;
+  var queryBookName = "SELECT name FROM books"
+  bookName = ""
+  db.any(queryBookName)
+  .then(function (data){
+    bookName=data;
+  })
+  .catch(err => {
+    console.log(err);
+  });
+  var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:'+ bookName;
   axios({
       url: url,
       method: 'GET',
@@ -293,37 +305,83 @@ app.get('/recommendation', (req, res) => {
       });
   });
 });
+//   var options = {
+//     "async": true,
+//     "crossDomain": true,
+//     "method" : "GET",
+//     "headers" : {
+//       "CLIENT_TOKEN" : "my-api-key",
+//       "cache-control": "no-cache"
+//     }
+//   };
+//   var bookName = "SELECT name FROM books";
+//   db.any(bookName)
+//   .then(async results => {
+//       res.render('Pages/recommendation',{
+//           "results": results
+//         });
+//   })
+//   .catch(err => {
+//       console.log(err);
+//       res.render('Pages/recommendation',{
+//           "results": "0"
+//         });
+//   });
+//   var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:'+ bookName;
+//   axios({
+//       url: url,
+//       method: 'GET',
+//       dataType: 'json',
+//       params: {
+//           "apikey": 'AIzaSyC5jtRuu7EPChBowPDQDL39u-mQMjKZuRo',
+//           "size": 10
+//       } 
+//   })
+//   .then(results => {
+//       console.log(results.data);
+//       res.render('pages/recommendation', {
+//           results: results.data,
+//       });
+//   })
+//   .catch(err => {
+//       res.render('pages/recommendation', {
+//           results: [],
+//           error: true,
+//           message: err.message,
+//       });
+//   });
+// });
 
-app.post('/recommendation', (req, res) => {
-  db.task('delete-book', task => {
-      return task.batch([
-          task.none(
-              `DELETE FROM 
-              user_to_book
-              WHERE
-              book_ISBN = $1
-              AND user_id = $2;`,
-              [req.session.user.user_id, parseInt(req.body.book_ISBN)]
-          ),
-          task.any(user_to_book, [req.session.user.user_id]),
-      ]);
-  })
-  .then(([, results]) => {
-      console.log(results.data);
-      res.render('pages/recommendation', {
-          results: results.data,
-          message: `Successfully removed ${req.body.name} from wishlist`,
-          action: 'delete',
-      });
-  })
-  .catch(err => {
-      res.render('pages/recommendation', {
-          results: [],
-          error: true,
-          message: err.message,
-      });
-  });
-});
+// app.post('/recommendation', (req, res) => {
+//   db.task('delete-book', task => {
+//       return task.batch([
+//           task.none(
+//               `DELETE FROM 
+//               user_to_book
+//               WHERE
+//               book_ISBN = $1
+//               AND user_id = $2;`,
+//               [req.session.user.user_id, parseInt(req.body.book_ISBN)]
+//           ),
+//           task.any(user_to_book, [req.session.user.user_id]),
+//       ]);
+//   })
+//   .then(([, results]) => {
+//       console.log(results.data);
+//       res.render('pages/recommendation', {
+//           results: results.data,
+//           message: `Successfully removed ${req.body.name} from wishlist`,
+//           action: 'delete',
+//       });
+//   })
+//   .catch(err => {
+//       res.render('pages/recommendation', {
+//           results: [],
+//           error: true,
+//           message: err.message,
+//       });
+//   });
+// });
 
 // app.get('/recommendation', (req, res) => {
 //     res.render('Pages/recommendation');
