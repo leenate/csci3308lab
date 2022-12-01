@@ -12,11 +12,8 @@
 <%- include ('../Partials/header') %> <%- include ('../Partials/menu') %>
 
 <main>
-    <div class="center" style="padding-top:1%">
-        <button type="submit" name="find_matches" class="btn btn-success" onclick="window.location.href='later'">Find Matches</button>
-    </div>
-    <div class="center" style="padding-top:5%; padding-bottom:7%">
-    <table style="width:100%">
+    <div class="center" style="padding-top:1%; padding-bottom:7%">
+    <table style="width:100%; background-color:white">
         <tr>
             <th>Matches</th>
         </tr>
@@ -24,19 +21,28 @@
         <% if (matches.length != 0) { i = 1;%>
         <% matches.forEach(function(item) { %>
             <tr>
-                <td>Match #<%=i%>:  <%= item.username %></td>
-                <td><button type="submit" name="add_friend" class="btn btn-success" onclick="window.location.href='later'">Add Friend</button></td>
+                <form action="/addfriend" method="POST">
+                    <td>Match #<%=i%>:  <input type="text" hidden value ="<%= item.user_id %>"" name="userID"> <%= item.username %></td>
+                    <td><button type="submit" name="add_friend" class="btn btn-success" onclick="window.location.href='addfriend'">Add Friend</button></td>
+                </form>
             </tr>
-        <% i = i + 1;}); }} else {%>
+        <% i = i + 1;}); } else { %>
             <tr>
-                <td>No Matches Found</td>
+                <td>No Matches Found: Try Adding New Book Preferences</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+        <%}} else {%>
+            <tr>
+                <td>No Matches Found: Try Adding New Book Preferences</td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
             </tr>
         <% } %>
     </table>
-    <table style="width:100%">
+    <table style="width:100%;background-color:white">
         <tr>
             <th>Friends</th>
         </tr>
@@ -47,7 +53,11 @@
             <td>Friend #<%=i%>:  <%= item.username %></td>
             <td><img alt="Icon" style="height:25px" src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" ></td>
         </tr>
-        <% i = i + 1;}); } } else {%>
+        <% i = i + 1;}); } else {%>
+            <tr>
+                <td>You Currently Have No Friends</td>
+            </tr>
+        <%}} else {%>
             <tr>
                 <td>You Currently Have No Friends</td>
             </tr>
