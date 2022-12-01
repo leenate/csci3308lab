@@ -32,71 +32,50 @@
                     </center>
                 </div>
                 <% }  else { %>
-                    <% for (let j = 0; j < item.length; j += 3 ) { %>
-                        <% let image = item[j].imageloct; %>
-                        <% let isbn = item[j].book_isbn; %>
-                        <style>
-                            body{
-                                color: white;
-                            }
-                
-                            div.card{
-                                background-color: #432f2e;
-                                margin-right: auto;
-                                margin-left: auto;
-                            }
-                
-                            div.card-group{
-                                width: 1000px;
-                                margin-right: auto;
-                                left: auto;
-                            }
-                        </style>
                         <div class="row">
-                            <div class="col d-flex justify-content-center">
-                                <div class="card">
-                                    <img src="<%= item[j].imageloct %>" width="200" height="200">
-                                    <div class="card-body">
+                        <% for (let j = 0; j < item.length; j++) { %>
+                            <style>
+                                body{
+                                    color: white;
+                                }
+                    
+                                div.card{
+                                    background-color: #432f2e;
+                                    margin-right: auto;
+                                    margin-left: auto;
+                                    border-width: 1px;
+                                    border-color: black;
+                                    margin-top: 50px;
+                                    padding: 10px;
+                                }
+                    
+                                div.card-group{
+                                    width: 1000px;
+                                    margin-right: auto;
+                                    margin-left: auto;
+                                    margin-bottom: auto;
+                                }
+                            </style>
+                                <div class="col d-flex justify-content-center">
+                                    <div class="card">
                                         <center>
-                                            <h5 class="card-title"><%= item[j].name %></h5>
-                                            <form id="remove-form" action="/wishlistRemove/<%= item[j].book_isbn %>" method="post">
-                                                <button class="btn btn-danger" type="submit">Remove Book</button>
-                                            </form>
+                                            <img src="<%= item[j].imageloct %>" width="200" height="200">
                                         </center>
+                                        <div class="card-body">
+                                            <center>
+                                                <h5 class="card-title"><%= item[j].name %></h5>
+                                                <form id="remove-form" action="/wishlistRemove/<%= item[j].book_isbn %>" method="post">
+                                                    <button class="btn btn-danger" type="submit">Remove Book</button>
+                                                </form>
+                                            </center>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col d-flex justify-content-center">
-                                <div class="card">
-                                    <img src="<%= item[j + 1].imageloct %>" width="200" height="200">
-                                    <div class="card-body">
-                                        <center>
-                                            <h5 class="card-title"><%= item[j + 1].name %></h5>
-                                            <form id="remove-form" action="/wishlistRemove/<%= item[j + 1].book_isbn %>" method="post">
-                                                <button class="btn btn-danger" type="submit">Remove Book</button>
-                                            </form>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col d-flex justify-content-center">
-                                <div class="card">
-                                    <img src="<%= item[j + 2].imageloct %>" width="200" height="200">
-                                    <div class="card-body">
-                                        <center>
-                                            <h5 class="card-title"><%= item[j + 2].name %></h5>
-                                            <form id="remove-form" action="/wishlistRemove/<%= item[j + 2].book_isbn %>" method="post">
-                                                <button class="btn btn-danger" type="submit">Remove Book</button>
-                                            </form>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <% } %>
+                    </div>
                     <% } %>
                     <% }) %>
-                <% } %>
+                    <% } %>
     </div>
 </main>
 
