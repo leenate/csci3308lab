@@ -52,6 +52,27 @@ INSERT INTO public.reviews(title,username, reviewcontents, stars, user_id) VALUE
 ('One Hundred Years of Solitude','Clara','This book was offending!',1,16),
 ('Invitation to a Beheading','Daphne','This book was bad !',2,17);
 
+INSERT INTO public.books(isbn,name,imageloct) VALUES
+(1,'fakebook1', 'something'),
+(2,'fakebook2', 'something'),
+(3,'fakebook3', 'something'),
+(4,'fakebook4', 'something'),
+(5,'fakebook5', 'something'),
+(6,'fakebook6', 'something'),
+(7,'fakebook7', 'something'),
+(8,'fakebook8', 'something'),
+(9,'fakebook9', 'something'),
+(10,'fakebook10', 'something'),
+(11,'fakebook11', 'something'),
+(12,'fakebook12', 'something'),
+(13,'fakebook13', 'something'),
+(14,'fakebook14', 'something'),
+(15,'fakebook15', 'something'),
+(16,'fakebook16', 'something'),
+(17,'fakebook17', 'something'),
+(18,'fakebook18', 'something'),
+(19,'fakebook19', 'something'),
+(20,'fakebook20', 'something');
 INSERT INTO public.books(isbn,name) VALUES
 (1,'Acid for the Children'),
 (2,'Once Upon a Time in Hollywood'),

@@ -76,12 +76,12 @@ app.get('/logout', (req, res) => {
 //     }
 //     res.render('Pages/matches');
 // });
-app.get('/wishlist', (req, res) => {
-    if (! req.session.user){
-        res.redirect('/login');
-    }
-    res.render('Pages/wishlist');
-});
+//app.get('/wishlist', (req, res) => {
+    //if (! req.session.user){
+        //res.redirect('/login');
+    //}
+    //res.render('Pages/wishlist');
+//});
 app.get('/register', (req, res) => {
     if (req.session.user){
         res.redirect('/wishlist');
@@ -204,6 +204,59 @@ app.post('/submitreview', async (req, res) => {
     })
     // Redirect to GET /login route page after data has been inserted successfully.
   });
+
+//------------------------------------------ wishlist --------------------------------------------------------------------------------
+app.get('/wishlist', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+    const username = req.session.user.username;
+    const query = "SELECT * FROM books INNER JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN INNER JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + username + "';";
+    db.task('get-books', task => {
+        return task.batch([
+            task.any(query)
+        ]);
+    })
+    .then(data => {
+        res.status(200);
+        res.render('pages/wishlist', {
+            books: data,
+            user: username, 
+        })
+    })
+    .catch(err => {
+        console.log(err)
+        res.render('pages/wishlist', {
+            books: [],
+            user: '',
+            error: true,
+            message: err.message,
+        });
+    });
+});
+
+app.post('/wishlistRemove/:isbn', async(req, res) => {
+    user_id = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';";
+    cur_user_id = '';
+    await db.one(user_id)
+        .then(function(data) {
+            cur_user_id = data.user_id;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    remove_book = "DELETE FROM user_to_book WHERE user_id = " + cur_user_id + " AND book_isbn = " + req.params.isbn + ";";
+    console.log(remove_book);
+    db.none(remove_book)
+        .then(function (data) {
+            res.redirect('/wishlist');
+        })
+        .catch(err => {
+            console.log(err);
+            res.send(`Unable to remove book ${req.params.isbn}`);
+        });
+});
+
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
   const find = req.body.find;
