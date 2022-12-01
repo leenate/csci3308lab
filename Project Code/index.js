@@ -206,7 +206,6 @@ app.post('/submitreview', async (req, res) => {
   });
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
-  const find = req.body.find;
   var options = {
     "async": true,
     "crossDomain": true,
@@ -216,7 +215,20 @@ app.get('/recommendation', (req, res) => {
       "cache-control": "no-cache"
     }
   };
-  var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:'+ find;
+  query = "SELECT books.name FROM books WHERE books.name = $1";
+  db.any(query)
+  .then(async results => {
+      res.render('Pages/recommendation',{
+          "results": results
+        });
+  })
+  .catch(err => {
+      console.log(err);
+      res.render('Pages/recommendation',{
+          "results": "undefined"
+        });
+  });
+  var url = 'https://www.googleapis.com/books/v1/volumes?q=intitle:'+ query;
   axios({
       url: url,
       method: 'GET',
