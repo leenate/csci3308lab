@@ -556,7 +556,7 @@ app.post('/searchBooks/add', async(req, res) => {
                         res.render('Pages/searchBooks', {
                             results: results.data.items,
                             error: true,
-                            message: `Sorry, something went wrong`
+                            message: `Sorry, something went wrong. This book may already be in your wishlist.`
                         })
                     });
             })

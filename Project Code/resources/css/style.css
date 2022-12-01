@@ -21,7 +21,7 @@ body {
 
 .navbar-brand {
     /* background-image: url("../img/bookshelfBlur.png"); */
-    color: #A2A3A4;
+    color: white;
 }
 
 .container-fluid {
@@ -31,10 +31,11 @@ body {
     width: 100%;
     background-size: cover;
     padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .page-title {
-    background-color: rgb(162,163,164,0.8);
+    background-color: rgb(255,255,255,0.5); /*rgb(162,163,164,0.8); */
     padding: 10px;
     margin: 10px;
     color: #2C1F1E;
@@ -42,11 +43,12 @@ body {
 }
 
 table {
-    background-color: rgb(162,163,164,0.8);
+    background-color: rgb(255,255,255,0.8);
     padding: 10px;
     margin: 10px;
     border-radius: 5px;
     justify-self: center;
+    width: 90%;
 }
 
 tr {
@@ -59,11 +61,51 @@ tr {
     color: #754F36;
 } */
 
-.btn-primary {
+.btn-primary, .btn-danger{
+    background-color: #754F36;
+    border-color: #754F36;
+    --bs-button-hover-color: #937258;
+    --bs-button-border-hover-color: #937258;
+    margin-top: 10px;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-danger:hover, .btn-danger:focus, .btn-danger:active {
+    background-color: #937258;
+    border-color: #937258;
+    margin-top: 10px;
+}
+
+.btn-success {
+    background-color: #754F36;
+    border-color: #754F36;
+}
+
+.btn-success:hover, .btn-success:focus, .btn-success:active {
     background-color: #937258;
     border-color: #937258;
 }
 
 a {
     color: #937258;
+}
+
+.alert-danger {
+    background-color: #754F36;
+    margin: 5px;
+    color: white;
+}
+
+.alert-success {
+    background-color: #937258;
+    margin: 5px;
+    color: white;
+}
+
+.fixed-bottom {
+    background-color: #2C1F1E;
+    padding-top: 10px;
+}
+
+.fixed-bottom p {
+    color: white;
 }
