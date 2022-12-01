@@ -657,10 +657,11 @@ app.post('/searchBooks/add', async(req, res) => {
             .then(async data => {
                 db.oneOrNone(gettumQuery, [user_id, req.body.book_ISBN])
                     .then(async data => {
-                        res.render('Pages/searchBooks', {
-                            results: results.data.items,
-                            Message: `Successfully added book`
-                        });
+                        res.redirect('/wishlist');
+                        //res.render('Pages/searchBooks', {
+                            //results: results.data.items,
+                            //Message: `Successfully added book`
+                        //});
                     })
                     .catch(err => {
                         console.log(err);
@@ -676,7 +677,7 @@ app.post('/searchBooks/add', async(req, res) => {
                 res.render('Pages/searchBooks', {
                     results: results.data.items,
                     error: true,
-                    message: `Sorry, something went wrong`
+                    message: `Sorry, something went wrong.  This book may already be in your wishlist.`
                 })
             });
     })
@@ -685,7 +686,7 @@ app.post('/searchBooks/add', async(req, res) => {
         res.render('Pages/searchBooks', {
             results: [],
             error: true,
-            message: `Sorry, something went wrong`
+            message: `Sorry, something went wrong.  This book may already be in your wishlist.`
         })
     }) 
 });
