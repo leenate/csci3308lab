@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS public.reviews CASCADE;
 DROP TABLE IF EXISTS public.user_to_user CASCADE;
 DROP TABLE IF EXISTS public.books CASCADE;
 DROP TABLE IF EXISTS public.user_to_book CASCADE;
+DROP TABLE IF EXISTS public.liked_books CASCADE;
 
 -- Create tables and constraints
 
@@ -49,6 +50,18 @@ CREATE TABLE IF NOT EXISTS books (
 );
 
 CREATE TABLE IF NOT EXISTS user_to_book (
+  user_id INT,
+  book_ISBN BIGINT, 
+  PRIMARY KEY(user_id,book_ISBN),
+  CONSTRAINT fk_user_reftable
+    FOREIGN KEY(user_id)
+      REFERENCES users(user_id),
+  CONSTRAINT fk_book_reftable
+    FOREIGN KEY(book_ISBN)
+      REFERENCES books(ISBN)
+);
+
+CREATE TABLE IF NOT EXISTS liked_books (
   user_id INT,
   book_ISBN BIGINT, 
   PRIMARY KEY(user_id,book_ISBN),

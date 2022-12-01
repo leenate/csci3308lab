@@ -279,7 +279,7 @@ app.get('/submit_books', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    query = "SELECT books.name,books.imageloct,books.isbn FROM books JOIN user_to_book ON books.isbn = user_to_book.book_isbn JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
+    query = "SELECT books.name,books.imageloct,books.isbn FROM books JOIN liked_books ON books.isbn = liked_books.book_isbn JOIN users ON liked_books.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
     db.any(query)
         .then(async results => {
             res.render('Pages/bookPreferences',{
@@ -289,7 +289,7 @@ app.get('/submit_books', (req, res) => {
         .catch(err => {
             console.log(err);
             res.render('Pages/bookPreferences',{
-                "results": results
+                "results": []
               });
         });
 });
@@ -304,7 +304,7 @@ app.post('/removeFromPreferences/:isbn', async (req, res) => {
         .catch(err => {
             console.log(err);
         });
-    delete_query = "DELETE FROM user_to_book WHERE user_id = " + user_id + " AND book_isbn = " + req.params.isbn +  ";";
+    delete_query = "DELETE FROM liked_books WHERE user_id = " + user_id + " AND book_isbn = " + req.params.isbn +  ";";
     console.log(delete_query);
     db.none(delete_query)
         .then(function (data){
@@ -344,7 +344,7 @@ app.post('/submit_books', async (req, res) => {
             console.log(err);
         });
     
-    let associationQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ";
+    let associationQuery = "INSERT INTO liked_books (user_id, book_isbn) VALUES ";
     let query = "INSERT INTO books(ISBN,name,imageloct) VALUES ";
     let count = 0;
     for (let i = 0; i < isbnArr.length; i++) { 
@@ -603,35 +603,9 @@ app.post('/searchBooks/remove', async (req, res) => {
 // GET MATCHES & FRIENDS
 
 app.get('/matches', (req, res) => {
-  const friends =  "SELECT user_id, username FROM users WHERE user_id IN (SELECT user_two FROM user_to_user WHERE user_one IN (SELECT user_id FROM users WHERE username = '"+req.session.user.username+"'))";
-  const matches = 'SELECT user_id, username FROM users WHERE username NOT IN (SELECT username FROM users WHERE user_id IN (SELECT user_two FROM user_to_user WHERE user_one IN (SELECT user_id FROM users WHERE username = $1))) ORDER BY username ASC LIMIT 10;';
-  console.log(friends)
-  db.any(friends)
-    .then(function (data) {
-      console.log(data)
-      db.any(matches,[req.session.user.username])
-      .then(function(result) {
-        res.render('Pages/matches', {
-          matches: result,
-          friends: data,
-        })
-      })
-      .catch(err => {
-        console.log(err)
-        res.render('Pages/matches', {
-          matches: '',
-          friends: '',
-        })
-      })
-    })
-    .catch(err => {
-      console.log(err)
-      res.render('Pages/matches', {
-        matches: '',
-        friends: '',
-      })
-    })
-  /*db.task('get-everything', task => {
+  const matches = 'SELECT username FROM users ORDER BY username ASC LIMIT 10;';
+  const friends = `SELECT username FROM users ORDER BY username DESC LIMIT 10`;
+  db.task('get-everything', task => {
     return task.batch([
       task.any(matches),
       task.any(friends)
@@ -639,7 +613,6 @@ app.get('/matches', (req, res) => {
   })
   .then(data => {
     res.status('200')
-    console.log("Matches", data)
     res.render('Pages/matches', {
       matches: data[0],
       friends: data[1],
@@ -651,25 +624,7 @@ app.get('/matches', (req, res) => {
         matches: '',
         friends: '',
       })
-  })*/
-});
-
-app.post('/addfriend', async function (request, response) {
-  console.log("BODY", request.body)
-  const query = 'INSERT INTO user_to_user (user_one, user_two) VALUES ($1, $2);';
-  const userID = await db.query("SELECT user_id from users WHERE username = '"+request.session.user.username+"';")
-  console.log(userID)
-  db.any(query, [
-    userID[0].user_id,
-    parseInt(request.body.userID) 
-  ])
-    .then(function (data) {
-      console.log("SUCCESS")
-      response.redirect('/matches')
-    })
-    .catch(function (err) {
-      return console.log(err);
-    });
+  })
 });
 
 // Authentication Required
