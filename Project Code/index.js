@@ -76,12 +76,12 @@ app.get('/logout', (req, res) => {
 //     }
 //     res.render('Pages/matches');
 // });
-app.get('/wishlist', (req, res) => {
-    if (! req.session.user){
-        res.redirect('/login');
-    }
-    res.render('Pages/wishlist');
-});
+//app.get('/wishlist', (req, res) => {
+    //if (! req.session.user){
+        //res.redirect('/login');
+    //}
+    //res.render('Pages/wishlist');
+//});
 app.get('/register', (req, res) => {
     if (req.session.user){
         res.redirect('/wishlist');
@@ -204,6 +204,59 @@ app.post('/submitreview', async (req, res) => {
     })
     // Redirect to GET /login route page after data has been inserted successfully.
   });
+
+//------------------------------------------ wishlist --------------------------------------------------------------------------------
+app.get('/wishlist', (req, res) => {
+    if (! req.session.user){
+        res.redirect('/login');
+    }
+    const username = req.session.user.username;
+    const query = "SELECT * FROM books INNER JOIN user_to_book ON books.ISBN = user_to_book.book_ISBN INNER JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + username + "';";
+    db.task('get-books', task => {
+        return task.batch([
+            task.any(query)
+        ]);
+    })
+    .then(data => {
+        res.status(200);
+        res.render('pages/wishlist', {
+            books: data,
+            user: username, 
+        })
+    })
+    .catch(err => {
+        console.log(err)
+        res.render('pages/wishlist', {
+            books: [],
+            user: '',
+            error: true,
+            message: err.message,
+        });
+    });
+});
+
+app.post('/wishlistRemove/:isbn', async(req, res) => {
+    user_id = "SELECT user_id FROM users WHERE username = '" + req.session.user.username + "';";
+    cur_user_id = '';
+    await db.one(user_id)
+        .then(function(data) {
+            cur_user_id = data.user_id;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    remove_book = "DELETE FROM user_to_book WHERE user_id = " + cur_user_id + " AND book_isbn = " + req.params.isbn + ";";
+    console.log(remove_book);
+    db.none(remove_book)
+        .then(function (data) {
+            res.redirect('/wishlist');
+        })
+        .catch(err => {
+            console.log(err);
+            res.send(`Unable to remove book ${req.params.isbn}`);
+        });
+});
+
 // ---------------Recommendation-----------------------------------------------------------------------------------------
 app.get('/recommendation', (req, res) => {
   const find = req.body.find;
@@ -279,7 +332,7 @@ app.get('/submit_books', (req, res) => {
     if (! req.session.user){
         res.redirect('/login');
     }
-    query = "SELECT books.name,books.imageloct,books.isbn FROM books JOIN user_to_book ON books.isbn = user_to_book.book_isbn JOIN users ON user_to_book.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
+    query = "SELECT books.name,books.imageloct,books.isbn FROM books JOIN liked_books ON books.isbn = liked_books.book_isbn JOIN users ON liked_books.user_id = users.user_id WHERE users.username = '" + req.session.user.username + "';";
     db.any(query)
         .then(async results => {
             res.render('Pages/bookPreferences',{
@@ -289,7 +342,7 @@ app.get('/submit_books', (req, res) => {
         .catch(err => {
             console.log(err);
             res.render('Pages/bookPreferences',{
-                "results": results
+                "results": []
               });
         });
 });
@@ -304,7 +357,7 @@ app.post('/removeFromPreferences/:isbn', async (req, res) => {
         .catch(err => {
             console.log(err);
         });
-    delete_query = "DELETE FROM user_to_book WHERE user_id = " + user_id + " AND book_isbn = " + req.params.isbn +  ";";
+    delete_query = "DELETE FROM liked_books WHERE user_id = " + user_id + " AND book_isbn = " + req.params.isbn +  ";";
     console.log(delete_query);
     db.none(delete_query)
         .then(function (data){
@@ -344,7 +397,7 @@ app.post('/submit_books', async (req, res) => {
             console.log(err);
         });
     
-    let associationQuery = "INSERT INTO user_to_book (user_id, book_isbn) VALUES ";
+    let associationQuery = "INSERT INTO liked_books (user_id, book_isbn) VALUES ";
     let query = "INSERT INTO books(ISBN,name,imageloct) VALUES ";
     let count = 0;
     for (let i = 0; i < isbnArr.length; i++) { 
